@@ -1,0 +1,6 @@
+enabled: false
+settings:
+  client_id:
+  client_secret:
+  server_domain:
+  scope:

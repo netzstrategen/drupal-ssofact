@@ -4,6 +4,6 @@ ssofact.redirect:
   defaults:
     _controller: '\Drupal\openid_connect\Controller\RedirectController::authenticate'
     _title: 'OpenID Connect redirect page'
-    client_name: 'generic'
+    client_name: 'ssofact'
   requirements:
     _custom_access: '\Drupal\openid_connect\Controller\RedirectController::access'

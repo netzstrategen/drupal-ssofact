@@ -13,5 +13,13 @@
   "require": {
     "drupal/openid_connect": "^1.0@beta",
     "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz/no-trailing-comma": "*"
+  },
+  "extra": {
+    "patches": {
+      "drupal/openid_connect": {
+        "Allow client plugins to provide default config": "https://www.drupal.org/files/issues/2018-04-06/default-config.2888048.7.patch",
+        "Allow client plugin to override redirect url route": "https://www.drupal.org/files/issues/2018-04-06/redirect-url.2921477-25.patch"
+      }
+    }
   }
 }
