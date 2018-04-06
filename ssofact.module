@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Contains ssofact.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function ssofact_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the ssofact module.
+    case 'help.page.ssofact':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('OpenID Connect provider for Newsfactory ssoFACT.') . '</p>';
+      return $output;
+  }
+}

@@ -1,0 +1,9 @@
+# Custom redirect URL endpoint.
+ssofact.redirect:
+  path: '/oauth/token'
+  defaults:
+    _controller: '\Drupal\openid_connect\Controller\RedirectController::authenticate'
+    _title: 'OpenID Connect redirect page'
+    client_name: 'generic'
+  requirements:
+    _custom_access: '\Drupal\openid_connect\Controller\RedirectController::access'

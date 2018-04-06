@@ -1,0 +1,7 @@
+name: OpenID Connect Newsfactory ssoFACT Client
+type: module
+description: OpenID Connect provider for Newsfactory ssoFACT.
+core: 8.x
+package: Other
+dependencies:
+  - openid_connect

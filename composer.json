@@ -1,0 +1,17 @@
+{
+  "name": "drupal/ssofact",
+  "type": "drupal-module",
+  "description": "OpenID Connect client provider for Newsfactory ssoFACT.",
+  "keywords": ["Drupal", "OpenID Connect", "OAuth2", "Single Sign-On", "SSO"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/ssofact",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/ssofact",
+    "source": "http://cgit.drupalcode.org/ssofact"
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "drupal/openid_connect": "^1.0@beta",
+    "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz/no-trailing-comma": "*"
+  }
+}
