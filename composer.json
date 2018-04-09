@@ -1,25 +1,25 @@
 {
-  "name": "drupal/ssofact",
-  "type": "drupal-module",
-  "description": "OpenID Connect client provider for Newsfactory ssoFACT.",
-  "keywords": ["Drupal", "OpenID Connect", "OAuth2", "Single Sign-On", "SSO"],
-  "license": "GPL-2.0+",
-  "homepage": "https://www.drupal.org/project/ssofact",
-  "support": {
-    "issues": "https://www.drupal.org/project/issues/ssofact",
-    "source": "http://cgit.drupalcode.org/ssofact"
-  },
-  "minimum-stability": "dev",
-  "require": {
-    "drupal/openid_connect": "^1.0@beta",
-    "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz/no-trailing-comma": "*"
-  },
-  "extra": {
-    "patches": {
-      "drupal/openid_connect": {
-        "Allow client plugins to provide default config": "https://www.drupal.org/files/issues/2018-04-06/default-config.2888048.7.patch",
-        "Allow client plugin to override redirect url route": "https://www.drupal.org/files/issues/2018-04-06/redirect-uri-2921477-based-on-default-config-2888048.do-not-test.patch"
-      }
+    "name": "drupal/ssofact",
+    "type": "drupal-module",
+    "description": "OpenID Connect client provider for Newsfactory ssoFACT.",
+    "keywords": ["Drupal", "OpenID Connect", "OAuth2", "Single Sign-On", "SSO"],
+    "license": "GPL-2.0+",
+    "homepage": "https://www.drupal.org/project/ssofact",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/ssofact",
+        "source": "http://cgit.drupalcode.org/ssofact"
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "drupal/openid_connect": "^1.0@beta",
+        "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz/no-trailing-comma": "*"
+    },
+    "extra": {
+        "enable-patching": true,
+        "patches": {
+            "drupal/openid_connect": {
+                "Allow client plugins to provide default config": "https://www.drupal.org/files/issues/2018-04-06/default-config.2888048.7.patch"
+            }
+        }
     }
-  }
 }
