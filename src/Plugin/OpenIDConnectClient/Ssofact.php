@@ -19,6 +19,7 @@ class Ssofact extends OpenIDConnectClientBase {
   const ENDPOINT_AUTHORIZE = '/REST/oauth/authorize';
   const ENDPOINT_TOKEN = '/REST/oauth/access_token';
   const ENDPOINT_USERINFO = '/REST/oauth/user';
+  const ENDPOINT_END_SESSION = '/REST/oauth/logout';
 
   const ROUTE_REDIRECT = 'ssofact.redirect';
 
@@ -64,6 +65,7 @@ class Ssofact extends OpenIDConnectClientBase {
       'authorization' => 'https://' . $this->configuration['server_domain'] . static::ENDPOINT_AUTHORIZE,
       'token' => 'https://' . $this->configuration['server_domain'] . static::ENDPOINT_TOKEN,
       'userinfo' => 'https://' . $this->configuration['server_domain'] . static::ENDPOINT_USERINFO,
+      'end_session' => 'https://' . $this->configuration['server_domain'] . static::ENDPOINT_END_SESSION,
     ];
   }
 

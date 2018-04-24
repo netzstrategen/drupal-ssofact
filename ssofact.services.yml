@@ -1,0 +1,6 @@
+services:
+  ssofact.response_filter.user_logout:
+    class: Drupal\ssofact\EventSubscriber\UserLogoutResponseFilter
+    arguments: ['@config.factory', '@plugin.manager.openid_connect_client.processor']
+    tags:
+      - { name: event_subscriber }
