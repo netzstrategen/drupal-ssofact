@@ -1,0 +1,7 @@
+ssofact.redirect_login:
+  path: '/openid-connect/{client_name}/login'
+  defaults:
+    _controller: '\Drupal\openid_connect\Controller\OpenIDConnectRedirectController::authenticate'
+    _title: 'OpenID Connect ssoFACT login form redirect page'
+  requirements:
+    _custom_access: '\Drupal\ssofact\Controller\SsofactRedirectController::access'
