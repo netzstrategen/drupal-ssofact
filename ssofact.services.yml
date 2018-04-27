@@ -4,3 +4,8 @@ services:
     arguments: ['@config.factory', '@plugin.manager.openid_connect_client.processor']
     tags:
       - { name: event_subscriber }
+  ssofact.autologin:
+    class: Drupal\ssofact\EventSubscriber\SsofactAutoLoginSubscriber
+    arguments: ['@config.factory', '@plugin.manager.openid_connect_client.processor', '@current_user']
+    tags:
+      - { name: event_subscriber }
