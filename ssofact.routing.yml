@@ -5,3 +5,10 @@ ssofact.redirect_login:
     _title: 'OpenID Connect ssoFACT login form redirect page'
   requirements:
     _custom_access: '\Drupal\ssofact\Controller\SsofactRedirectController::access'
+ssofact.user:
+  path: '/user/sso'
+  defaults:
+    _controller: '\Drupal\ssofact\Controller\Ssofact::content'
+    _title: 'ssoFACT'
+  requirements:
+    _permission: 'change own username'

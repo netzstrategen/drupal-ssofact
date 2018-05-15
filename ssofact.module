@@ -5,6 +5,8 @@
  * Contains ssofact.module.
  */
 
+use Drupal\Component\Utility\Unicode;
+use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
@@ -18,5 +20,54 @@ function ssofact_help($route_name, RouteMatchInterface $route_match) {
       $output .= '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('OpenID Connect provider for Newsfactory ssoFACT.') . '</p>';
       return $output;
+  }
+}
+
+/**
+ * Implements hook_css_alter().
+ */
+function ssofact_css_alter(&$css) {
+  if (\Drupal::routeMatch()->getRouteName() !== 'ssofact.user') {
+    return;
+  }
+  ssofact_convert_asset_paths($css);
+}
+
+/**
+ * Implements hook_js_alter().
+ */
+function ssofact_js_alter(&$js) {
+  if (\Drupal::routeMatch()->getRouteName() !== 'ssofact.user') {
+    return;
+  }
+  ssofact_convert_asset_paths($js);
+}
+
+/**
+ * Implements hook_file_url_alter().
+ */
+function ssofact_file_url_alter(&$uri) {
+  if (\Drupal::routeMatch()->getRouteName() !== 'ssofact.user') {
+    return;
+  }
+  if (strpos($uri, '/') === 0) {
+    $uri = Unicode::substr($uri, 1);
+    $uri = $GLOBALS['base_url'] . '/' . UrlHelper::encodePath($uri);
+  }
+}
+
+/**
+ * Converts the paths of the given assets to be absolute.
+ *
+ * @param $assets
+ *   The assets objects to convert.
+ */
+function ssofact_convert_asset_paths(&$assets) {
+  foreach ($assets as $name => $asset) {
+    if ($asset['type'] !== 'file') {
+      continue;
+    }
+    $assets[$name]['data'] = file_create_url($asset['data']);
+    $assets[$name]['type'] = 'external';
   }
 }
