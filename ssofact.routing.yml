@@ -12,3 +12,5 @@ ssofact.user:
     _title: 'ssoFACT'
   requirements:
     _permission: 'change own username'
+  options:
+    no_cache: true
