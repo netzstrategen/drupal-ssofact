@@ -11,6 +11,6 @@ ssofact.user:
     _controller: '\Drupal\ssofact\Controller\Ssofact::content'
     _title: 'ssoFACT'
   requirements:
-    _permission: 'change own username'
+    _permission: 'access content'
   options:
     no_cache: true

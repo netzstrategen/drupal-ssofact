@@ -10,7 +10,10 @@ class Ssofact extends ControllerBase {
    * {@inheritdoc}
    */
   public function content() {
-    return [];
+    return [
+      '#title' => '{{ title }}',
+      '#markup' => '{{ content }}',
+    ];
   }
 
 }

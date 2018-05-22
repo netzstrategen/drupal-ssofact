@@ -44,6 +44,12 @@ function ssofact_js_alter(&$js) {
 }
 
 /**
+ * Convert domain-relative URLs to absolute ones.
+ *
+ * The `ssofact.user` route markup will be used by ssoFACT as a template for
+ * user actions like login, signup and password reset. To render the template
+ * correctly, assets should have a full URL.
+ *
  * Implements hook_file_url_alter().
  */
 function ssofact_file_url_alter(&$uri) {
