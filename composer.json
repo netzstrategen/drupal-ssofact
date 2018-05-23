@@ -11,7 +11,7 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "drupal/openid_connect": "^1.0@beta",
+        "drupal/openid_connect": "1.x-dev",
         "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz/no-trailing-comma": "*"
     },
     "extra": {
