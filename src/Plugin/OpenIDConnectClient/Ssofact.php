@@ -21,6 +21,8 @@ class Ssofact extends OpenIDConnectClientBase {
   const ENDPOINT_USERINFO = '/REST/oauth/user';
   const ENDPOINT_END_SESSION = '/REST/oauth/logout';
 
+  const ENDPOINT_USER_CREATE = '/REST/services/authenticate/user/registerUser';
+
   const ROUTE_REDIRECT = 'ssofact.redirect';
 
   /**
@@ -66,6 +68,7 @@ class Ssofact extends OpenIDConnectClientBase {
       'token' => 'https://' . $this->configuration['server_domain'] . static::ENDPOINT_TOKEN,
       'userinfo' => 'https://' . $this->configuration['server_domain'] . static::ENDPOINT_USERINFO,
       'end_session' => 'https://' . $this->configuration['server_domain'] . static::ENDPOINT_END_SESSION,
+      'user_create' => 'https://' . $this->configuration['server_domain'] . static::ENDPOINT_USER_CREATE,
     ];
   }
 
@@ -112,6 +115,47 @@ class Ssofact extends OpenIDConnectClientBase {
    */
   protected function getRedirectUrl(array $route_parameters = [], array $options = []) {
     return parent::getRedirectUrl([], ['https' => NULL] + $options);
+  }
+
+  public function createUser($email) {
+    $redirect_uri = Url::fromUri('internal:/shop/user/confirm')->toString();
+    $endpoints = $this->getEndpoints();
+    $request_options = [
+      'form_params' => [
+        'email' => $email,
+        'optins' => [
+          'confirm_agb' => 0,
+          'acquisitionMail' => 0,
+          'acquisitionEmail' => 0,
+          'acquisitionPhone' => 0,
+          'list_noch-fragen' => 0,
+          'list_premium' => 0,
+          'list_freizeit' => 0,
+        ],
+        'confirmationUrl' => $redirect_uri,
+      ],
+      'headers' => [
+        'Accept' => 'application/json',
+        'rfbe-key' => static::RFBE_KEY,
+        'rfbe-secret' => static::RFBE_SECRET,
+      ],
+    ];
+    try {
+      $response = $this->httpClient->post($endpoints['user_create'], $request_options);
+      $response_data = json_decode((string) $response->getBody(), TRUE);
+
+      $this->loggerFactory->get('ssofact')->debug('User register response: @response', [
+        '@response' => "<pre>\n" . var_export($response_data, TRUE) . "</pre>",
+      ]);
+      return $response_data;
+    }
+    catch (\Exception $e) {
+      $this->loggerFactory->get('ssofact' . $this->pluginId)
+        ->error('User register failed: @error_message', [
+          '@error_message' => $e->getMessage(),
+        ]);
+      throw $e;
+    }
   }
 
 }
