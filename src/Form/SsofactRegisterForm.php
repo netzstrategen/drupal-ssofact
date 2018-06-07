@@ -124,18 +124,31 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
+    $client_config = $this->config('openid_connect.settings.ssofact')->get('settings');
+    $client = $this->pluginManager->createInstance('ssofact', $client_config);
+    $response = $client->createUser($form_state->getValue('email'));
+
+    if ($response['statuscode'] !== 200) {
+      foreach ($response['userMessages'] as $error_message) {
+        $form_state->setError($form['email'], $error_message);
+      }
+    }
+    if (empty($response['userId'])) {
+      $form_state->setError($form['email'], $this->t('Unable to register your account. Please contact our support.'));
+    }
+    else {
+      $form_state->setTemporaryValue('userId', $response['userId']);
+    }
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    if ($sub = $form_state->getTemporaryValue('userId', $response['userId']);) {
+      // @todo Redirect to SSO login?
+    }
     // openid_connect_save_destination();
-    // $client_name = $form_state->getTriggeringElement()['#name'];
-
-    $client_config = $this->config('openid_connect.settings.ssofact')->get('settings');
-    $client = $this->pluginManager->createInstance('ssofact', $client_config);
-    $client->createUser($form_state->getValue('email'));
 
     // $scopes = $this->claims->getScopes();
     // $_SESSION['openid_connect_op'] = 'login';
