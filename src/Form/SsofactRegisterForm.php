@@ -145,7 +145,7 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    if ($sub = $form_state->getTemporaryValue('userId', $response['userId']);) {
+    if ($sub = $form_state->getTemporaryValue('userId')) {
       // @todo Redirect to SSO login?
     }
     // openid_connect_save_destination();
