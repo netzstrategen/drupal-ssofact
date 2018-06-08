@@ -126,6 +126,7 @@ class Ssofact extends OpenIDConnectClientBase {
     $request_options = [
       'form_params' => [
         'email' => $email,
+        /*
         'optins' => [
           'confirm_agb' => 0,
           'acquisitionMail' => 0,
@@ -135,6 +136,7 @@ class Ssofact extends OpenIDConnectClientBase {
           'list_premium' => 0,
           'list_freizeit' => 0,
         ],
+        */
         'confirmationUrl' => $redirect_uri,
       ],
       'headers' => [
