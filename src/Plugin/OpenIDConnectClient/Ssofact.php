@@ -85,9 +85,11 @@ class Ssofact extends OpenIDConnectClientBase {
    * {@inheritdoc}
    */
   public function decodeIdToken($id_token) {
+    /*
     $this->loggerFactory->get('ssofact')->debug('id_token: @id_token', [
       '@id_token' => "<pre>\n" . var_export($id_token, TRUE) . "</pre>",
     ]);
+    */
     return [];
   }
 
@@ -98,14 +100,15 @@ class Ssofact extends OpenIDConnectClientBase {
     $userinfo = parent::retrieveUserInfo($access_token);
 
     if ($userinfo) {
+      // Documentation states unique_user_hash, but vendor instructed to use ID.
+      $userinfo['sub'] = $userinfo['id'];
+      $userinfo['preferred_username'] = $userinfo['email'];
+      $userinfo['email_verified'] = $userinfo['confirmed'];
+      $userinfo['updated_at'] = $userinfo['lastchgdate'];
+
       $this->loggerFactory->get('ssofact')->debug('Userinfo: @userinfo', [
         '@userinfo' => "<pre>\n" . var_export($userinfo, TRUE) . "</pre>",
       ]);
-      //$userinfo['sub'] = $userinfo['unique_user_hash'];
-      $userinfo['sub'] = $userinfo['id'];
-      $userinfo['email_verified'] = $userinfo['confirmed'];
-      $userinfo['updated_at'] = $userinfo['lastchgdate'];
-      unset($userinfo['id'], $userinfo['confirmed'], $userinfo['lastchgdate']);
     }
     return $userinfo;
   }
