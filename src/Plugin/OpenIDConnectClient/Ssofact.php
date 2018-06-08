@@ -34,6 +34,8 @@ class Ssofact extends OpenIDConnectClientBase {
       'client_secret' => '',
       'server_domain' => '',
       'scope' => '',
+      'rfbe_key' => '',
+      'rfbe_secret' => '',
     ] + parent::defaultConfiguration();
   }
 
@@ -55,6 +57,16 @@ class Ssofact extends OpenIDConnectClientBase {
       '#title' => $this->t('Scope'),
       '#type' => 'textfield',
       '#default_value' => $this->configuration['scope'],
+    ];
+    $form['rfbe_key'] = [
+      '#title' => $this->t('RFBE key'),
+      '#type' => 'textfield',
+      '#default_value' => $this->configuration['rfbe_key'],
+    ];
+    $form['rfbe_secret'] = [
+      '#title' => $this->t('RFBE secret'),
+      '#type' => 'textfield',
+      '#default_value' => $this->configuration['rfbe_secret'],
     ];
     return $form;
   }
@@ -141,8 +153,8 @@ class Ssofact extends OpenIDConnectClientBase {
       ],
       'headers' => [
         'Accept' => 'application/json',
-        'rfbe-key' => static::RFBE_KEY,
-        'rfbe-secret' => static::RFBE_SECRET,
+        'rfbe-key' => $this->configuration['rfbe_key'],
+        'rfbe-secret' => $this->configuration['rfbe_secret'],
       ],
     ];
     try {
