@@ -8,6 +8,7 @@
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\user\UserInterface;
 
 /**
  * Implements hook_help().
@@ -20,6 +21,19 @@ function ssofact_help($route_name, RouteMatchInterface $route_match) {
       $output .= '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('OpenID Connect provider for Newsfactory ssoFACT.') . '</p>';
       return $output;
+  }
+}
+
+/**
+ * Implements hook_openid_connect_userinfo_save().
+ */
+function ssofact_openid_connect_userinfo_save(UserInterface $account, $context) {
+  $userinfo = $context['userinfo'];
+  if (!empty($userinfo['confirmed']) && empty($userinfo['deactivated'])) {
+    $account->activate();
+  }
+  else {
+    $account->block();
   }
 }
 
