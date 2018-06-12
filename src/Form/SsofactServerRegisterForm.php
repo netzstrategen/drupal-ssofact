@@ -7,17 +7,16 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Url;
-use Drupal\Core\Routing\CurrentRouteMatch;
 use Drupal\openid_connect\OpenIDConnectClaims;
 use Drupal\openid_connect\Plugin\OpenIDConnectClientManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class RegisterForm.
+ * Class ServerRegisterForm.
  *
  * @package Drupal\ssofact\Form
  */
-class SsofactRegisterForm extends FormBase implements ContainerInjectionInterface {
+class SsofactServerRegisterForm extends FormBase implements ContainerInjectionInterface {
 
   /**
    * Drupal\openid_connect\Plugin\OpenIDConnectClientManager definition.
@@ -34,13 +33,6 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
   protected $claims;
 
   /**
-   * The current route match service.
-   *
-   * @var \Drupal\Core\Routing\RouteMatch
-   */
-  protected $routeMatch;
-
-  /**
    * The constructor.
    *
    * @param \Drupal\openid_connect\Plugin\OpenIDConnectClientManager $plugin_manager
@@ -50,13 +42,11 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    */
   public function __construct(
       OpenIDConnectClientManager $plugin_manager,
-      OpenIDConnectClaims $claims,
-      CurrentRouteMatch $route_match
+      OpenIDConnectClaims $claims
   ) {
 
     $this->pluginManager = $plugin_manager;
     $this->claims = $claims;
-    $this->routeMatch = $route_match;
   }
 
   /**
@@ -65,8 +55,7 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('plugin.manager.openid_connect_client.processor'),
-      $container->get('openid_connect.claims'),
-      $container->get('current_route_match')
+      $container->get('openid_connect.claims')
     );
   }
 
@@ -74,7 +63,7 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'ssofact_register_form';
+    return 'ssofact_server_register_form';
   }
 
   /**
@@ -124,10 +113,6 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
       '#type' => 'hidden',
       // @todo Use current path.
       '#value' => Url::fromUri('internal:/')->toString(),
-    ];
-    $form['node_id'] = [
-      '#type' => 'hidden',
-      '#value' => $this->routeMatch->getRawParameter('node'),
     ];
 
     $form['actions'] = ['#type' => 'actions'];
