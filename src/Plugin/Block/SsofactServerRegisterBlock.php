@@ -15,12 +15,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Provides a user login block.
  *
  * @Block(
- *   id = "ssofact_register_block",
- *   admin_label = @Translation("User register (ssoFACT)"),
+ *   id = "ssofact_server_register_block",
+ *   admin_label = @Translation("User server register (ssoFACT)"),
  *   category = @Translation("Forms")
  * )
  */
-class SsofactRegisterBlock extends BlockBase implements ContainerFactoryPluginInterface {
+class SsofactServerRegisterBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   use RedirectDestinationTrait;
 
@@ -79,7 +79,7 @@ class SsofactRegisterBlock extends BlockBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public function build() {
-    $form = \Drupal::formBuilder()->getForm('Drupal\ssofact\Form\SsofactRegisterForm');
+    $form = \Drupal::formBuilder()->getForm('Drupal\ssofact\Form\SsofactServerRegisterForm');
     unset($form['email']['#attributes']['autofocus']);
     $form['email']['#size'] = 15;
 
@@ -125,7 +125,7 @@ class SsofactRegisterBlock extends BlockBase implements ContainerFactoryPluginIn
       ]),
     ];
     return [
-      'user_register_form' => $form,
+      'user_server_register_form' => $form,
       'user_links' => [
         '#theme' => 'item_list',
         '#items' => $items,

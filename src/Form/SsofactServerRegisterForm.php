@@ -12,11 +12,11 @@ use Drupal\openid_connect\Plugin\OpenIDConnectClientManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class RegisterForm.
+ * Class ServerRegisterForm.
  *
  * @package Drupal\ssofact\Form
  */
-class SsofactRegisterForm extends FormBase implements ContainerInjectionInterface {
+class SsofactServerRegisterForm extends FormBase implements ContainerInjectionInterface {
 
   /**
    * Drupal\openid_connect\Plugin\OpenIDConnectClientManager definition.
@@ -63,7 +63,7 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'ssofact_register_form';
+    return 'ssofact_server_register_form';
   }
 
   /**
