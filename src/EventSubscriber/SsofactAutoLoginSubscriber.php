@@ -70,6 +70,10 @@ class SsofactAutoLoginSubscriber implements EventSubscriberInterface {
    */
   public function onKernelRequestAuthenticate(GetResponseEvent $event) {
     if ($this->currentUser->isAnonymous() && $event->getRequest()->cookies->has('RF_OAUTH_SERVER')) {
+      // Do not interfere during any OpenID Connect authentication procedures.
+      if (FALSE !== strpos($event->getRequest()->get('_route'), 'openid_connect') || FALSE !== strpos($event->getRequest()->get('_route'), 'ssofact')) {
+        return;
+      }
       $client_config = $this->configFactory->get('openid_connect.settings.ssofact')->get('settings');
       $client = $this->pluginManager->createInstance('ssofact', $client_config);
 
