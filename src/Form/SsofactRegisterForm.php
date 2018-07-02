@@ -7,7 +7,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Url;
-use Drupal\Core\Routing\RouteMatch;
+use Drupal\Core\Routing\CurrentRouteMatch;
 use Drupal\openid_connect\OpenIDConnectClaims;
 use Drupal\openid_connect\Plugin\OpenIDConnectClientManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -51,7 +51,7 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
   public function __construct(
       OpenIDConnectClientManager $plugin_manager,
       OpenIDConnectClaims $claims,
-      RouteMatch $route_match
+      CurrentRouteMatch $route_match
   ) {
 
     $this->pluginManager = $plugin_manager;
