@@ -10,6 +10,8 @@ use Drupal\Core\Url;
 use Drupal\Core\Routing\CurrentRouteMatch;
 use Drupal\openid_connect\OpenIDConnectClaims;
 use Drupal\openid_connect\Plugin\OpenIDConnectClientManager;
+use Drupal\ssofact\Plugin\OpenIDConnectClient\Ssofact;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -137,6 +139,32 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+  }
+
+  public function validateEmail($form, FormStateInterface $form_state) {
+
+  }
+
+  private function isEmailRegistred($email) {
+    $client_config = $this->config('openid_connect.settings.ssofact')->get('settings');
+    $server_domain = $clinet_config['server_domain'];
+    $api_url = 'https://' . SSOFACT_SERVER_DOMAIN . SsoFact::ENDPOINT_IS_EMAIL_REGISTERED;
+    $client = \Drupal::httpClient();
+    $client->post($api_url, [])
+      'body' => [
+        'email' => $email
+      ],
+      'headers' => [
+        'Accept' => 'application/json',
+        'rfbe-key' => SSOFACT_RFBE_KEY,
+        'rfbe-secret' => SSOFACT_RFBE_SECRET,
+      ],
+    ]);
+    if ($response instanceof \WP_Error) {
+      static::displaySsoResponseError();
+      return;
+    }
+
   }
 
 }
