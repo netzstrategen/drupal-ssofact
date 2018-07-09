@@ -96,7 +96,7 @@ class SsofactLoginForm extends FormBase implements ContainerInjectionInterface {
       'redirect_uri' => $redirect_uri,
     ]);
 
-    $form['#action'] = 'https://' . $client_config['server_domain'] . '/index.php?' . http_build_query([
+    $form['#action'] = 'https://' . $client_config['server_domain'] . '/?' . http_build_query([
       'next' => $authorize_uri,
     ]);
 
