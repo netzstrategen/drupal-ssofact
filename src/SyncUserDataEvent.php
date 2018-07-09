@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ssofact;
+namespace Drupal\ssofact\Event;
 
 use Drupal\user\UserInterface;
 use Symfony\Component\EventDispatcher\Event;
