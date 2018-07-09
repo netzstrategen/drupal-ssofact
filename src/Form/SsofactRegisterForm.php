@@ -105,6 +105,18 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
       '#value' => $this->routeMatch->getRawParameter('node'),
     ];
 
+    $form['privacy'] = [
+      '#type' => 'checkbox',
+      '#value' => $this->t('I accept terms and conditions'),
+      '#return_value' => '1',
+    ];
+
+    // Hidden field with value "1" to trigger special registration form behavior for 1-article-test.
+    $form['_qf__registerForm'] = [
+      '#type' => '1',
+      '#value' => $this->routeMatch->getRawParameter('node'),
+    ];
+
     $form['#action'] = 'https://' . $client_config['server_domain'] . '/registrieren.html?' . http_build_query([
       'next' => Url::fromUri('internal:/')->toString(),
     ]);
