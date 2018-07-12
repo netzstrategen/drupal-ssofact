@@ -2,6 +2,7 @@
 
 namespace Drupal\ssofact\Form;
 
+use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -100,6 +101,14 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
         'spellcheck' => 'false',
         'autofocus' => 'autofocus',
       ],
+      '#ajax' => [
+        'callback' => 'self::validateEmail',
+        'effect' => 'fade',
+        'event' => 'keyup',
+        'progress' => [
+          'message' => 'progessssss.....',
+        ],
+      ],
     ];
 
     $form['article_test'] = [
@@ -115,16 +124,19 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
 
     // Hidden field with value "1" to trigger special registration form behavior for 1-article-test.
     $form['_qf__registerForm'] = [
-      '#type' => '1',
-      '#value' => $this->routeMatch->getRawParameter('node'),
+      '#type' => 'hidden',
+      '#value' => '1',
     ];
 
-    $form['#action'] = 'https://' . $client_config['server_domain'] . '/registrieren.html?' . http_build_query([
-      'next' => Url::fromUri('internal:/')->toString(),
+    $form['#action'] = 'https://' . $client_config->get('settings.server_domain') . '/registrieren.html?' . http_build_query([
+      'next' => \Drupal::Request()->getSchemeAndHttpHost() . Url::fromRoute('<current>')->toString(),
     ]);
 
     $form['actions'] = ['#type' => 'actions'];
-    $form['actions']['submit'] = ['#type' => 'submit', '#value' => $this->t('Sign up')];
+    $form['actions']['submit'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Sign up'),
+    ];
 
     return $form;
   }
@@ -142,28 +154,36 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
   }
 
   public function validateEmail($form, FormStateInterface $form_state) {
+   $ajax_response = new AjaxResponse();
+   $text = 'a dummy text';
+   $ajax_response->addCommand(new HtmlCommand('#edit-email', $text));
+
+error_log('adsfadfadsfa');
+self::isEmalRegistred('adsf@example.com');
+   return $ajax_response;
 
   }
 
   private function isEmailRegistred($email) {
     $client_config = $this->config('openid_connect.settings.ssofact')->get('settings');
+    $ssofact_client = $this->pluginManager->createInstance('ssofact', $client_config);
+    $rfbe_key = $ssofact_client['rfbe_key'];
+    $rfbe_secret = $ssofact_client['rfbe_secret'];
     $server_domain = $clinet_config['server_domain'];
     $api_url = 'https://' . SSOFACT_SERVER_DOMAIN . SsoFact::ENDPOINT_IS_EMAIL_REGISTERED;
     $client = \Drupal::httpClient();
-    $client->post($api_url, [])
+    $request = $client->post($api_url, [
       'body' => [
         'email' => $email
       ],
       'headers' => [
         'Accept' => 'application/json',
-        'rfbe-key' => SSOFACT_RFBE_KEY,
-        'rfbe-secret' => SSOFACT_RFBE_SECRET,
+        'rfbe-key' => $rfbe_key,
+        'rfbe-secret' => $rfbe_secret,
       ],
     ]);
-    if ($response instanceof \WP_Error) {
-      static::displaySsoResponseError();
-      return;
-    }
+    $response = json_decode($request->getBody());
+    //var_dump($response);
 
   }
 
