@@ -91,7 +91,6 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
 
     $form['email'] = [
       '#type' => 'email',
-      '#title' => $this->t('Your email address'),
       '#size' => 60,
       '#maxlength' => USERNAME_MAX_LENGTH,
       '#required' => TRUE,
@@ -100,12 +99,14 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
         'autocapitalize' => 'none',
         'spellcheck' => 'false',
         'autofocus' => 'autofocus',
+        'placeholder' => $this->t('Your email address'),
       ],
       '#ajax' => [
-        'callback' => 'self::validateEmail',
+        'callback' => 'Drupal\ssofact\Form\SsofactRegisterForm::validateEmail',
         'effect' => 'fade',
         'event' => 'keyup',
         'progress' => [
+          'type' => 'throbber',
           'message' => 'progessssss.....',
         ],
       ],
@@ -118,7 +119,8 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
 
     $form['privacy'] = [
       '#type' => 'checkbox',
-      '#value' => $this->t('I accept terms and conditions'),
+      '#required' => TRUE,
+      '#title' => $this->t('I accept terms and conditions'),
       '#return_value' => '1',
     ];
 
@@ -158,8 +160,7 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    $text = 'a dummy text';
    $ajax_response->addCommand(new HtmlCommand('#edit-email', $text));
 
-error_log('adsfadfadsfa');
-self::isEmalRegistred('adsf@example.com');
+   self::isEmalRegistred('adsf@example.com');
    return $ajax_response;
 
   }
@@ -183,7 +184,7 @@ self::isEmalRegistred('adsf@example.com');
       ],
     ]);
     $response = json_decode($request->getBody());
-    //var_dump($response);
+    return $response;
 
   }
 
