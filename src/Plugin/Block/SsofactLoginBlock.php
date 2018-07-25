@@ -80,7 +80,6 @@ class SsofactLoginBlock extends BlockBase implements ContainerFactoryPluginInter
    */
   public function build() {
     $form = \Drupal::formBuilder()->getForm('Drupal\ssofact\Form\SsofactLoginForm');
-    unset($form['login']['#attributes']['autofocus']);
     $form['login']['#size'] = 15;
     $form['pass']['#size'] = 15;
 
@@ -101,37 +100,60 @@ class SsofactLoginBlock extends BlockBase implements ContainerFactoryPluginInter
     // ];
     // $form['#action'] = $placeholder;
 
-    // Build action links.
-    $items = [];
-    if (\Drupal::config('user.settings')->get('register') != USER_REGISTER_ADMINISTRATORS_ONLY) {
-      $items['create_account'] = [
-        '#type' => 'link',
-        '#title' => $this->t('Create new account'),
-        '#url' => Url::fromRoute('user.register', [], [
-          'attributes' => [
-            'title' => $this->t('Create a new user account.'),
-            'class' => ['create-account-link'],
-          ],
-        ]),
-      ];
-    }
-    $items['request_password'] = [
-      '#type' => 'link',
-      '#title' => $this->t('Reset your password'),
-      '#url' => Url::fromRoute('user.pass', [], [
-        'attributes' => [
-          'title' => $this->t('Send password reset instructions via email.'),
-          'class' => ['request-password-link'],
-        ],
-      ]),
-    ];
-    return [
+    $build = [
       'user_login_form' => $form,
-      'user_links' => [
-        '#theme' => 'item_list',
-        '#items' => $items,
+      '#server_domain' => $form['#server_domain'],
+    ];
+
+    $build['social'] = [
+      '#weight' => 20,
+    ];
+    $build['social']['heading'] = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['nfy-social-login-text']],
+      '#markup' => 'Alternativ mit Facebook anmelden',
+    ];
+    $build['social']['facebook'] = [
+      '#type' => 'container',
+      '#attributes' => [
+        'class' => ['fb-login-button'],
+        'data-scope' => 'public_profile,email',
+        'data-width' => '500',
+        'onlogin' => 'nfyFacebookStatusCallback()',
+        'data-max-rows' => '1',
+        'data-size' => 'large',
+        'data-button-type' => 'login_with',
+        'data-show-faces' => 'false',
+        'data-auto-logout-link' => 'false',
+        'data-use-continue-as' => 'false',
       ],
     ];
+
+    $build['register'] = [
+      '#weight' => 30,
+      '#type' => 'container',
+      '#attributes' => ['class' => ['nfy-box-info', 'nfy-register-link-info']],
+    ];
+    $build['register']['box'] = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['nfy-box']],
+    ];
+    $build['register']['box']['question'] = [
+      '#markup' => 'Sie sind noch nicht registriert?',
+    ];
+    $build['register']['box']['link'] = [
+      '#type' => 'link',
+      '#title' => $this->t('Register here'),
+      '#url' => Url::fromUri('https://' . $form['#server_domain'] . '/registrieren.html?' . http_build_query([
+        'next' => \Drupal::request()->get('destination') ?: Url::fromRoute('user.page', [], ['absolute' => TRUE])->toString(),
+      ])),
+      '#attributes' => [
+        'title' => $this->t('Create a new user account.'),
+        'class' => ['nfy-link', 'create-account-link'],
+      ],
+    ];
+
+    return $build;
   }
 
   /**

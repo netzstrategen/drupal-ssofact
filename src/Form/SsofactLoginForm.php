@@ -99,10 +99,21 @@ class SsofactLoginForm extends FormBase implements ContainerInjectionInterface {
     $form['#action'] = 'https://' . $client_config['server_domain'] . '/?' . http_build_query([
       'next' => $authorize_uri,
     ]);
+    // Allow theme template to access the server domain easily.
+    $form['#server_domain'] = $client_config['server_domain'];
+
+    // @todo External URLs need a dynamic domain name.
+    // @todo CSS is loaded before theme, causing styles to be reset.
+    // $form['#attached']['library'][] = 'ssofact/form';
+
+    $form['#attributes']['class'][] = 'nfy-form';
+    $form['#attributes']['class'][] = 'nfy-flex-form';
 
     $form['login'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Username'),
+      '#title' => $this->t('Email address'),
+      '#title_display' => 'invisible',
+      '#placeholder' => 'E-Mail-Adresse eingeben',
       '#size' => 60,
       '#maxlength' => USERNAME_MAX_LENGTH,
       '#required' => TRUE,
@@ -116,20 +127,45 @@ class SsofactLoginForm extends FormBase implements ContainerInjectionInterface {
     $form['pass'] = [
       '#type' => 'password',
       '#title' => $this->t('Password'),
+      '#title_display' => 'invisible',
+      '#placeholder' => 'Passwort eingeben',
       '#size' => 60,
       '#required' => TRUE,
     ];
     $form['permanent_login'] = [
-      '#type' => 'hidden',
+      '#type' => 'checkbox',
+      '#title' => $this->t('Stay logged-in'),
       '#value' => 1,
+      '#wrapper_attributes' => [
+        'class' => ['nfy-checkbox', 'checkbox'],
+      ],
     ];
+    $form['request_password'] = [
+      '#type' => 'link',
+      '#title' => $this->t('Forgot password?'),
+      '#url' => Url::fromUri('https://' . $form['#server_domain'] . '/index.php?' . http_build_query([
+        'pageid' => 53,
+        'next' => Url::fromUri('internal:/shop/user/account', ['absolute' => TRUE])->toString(),
+      ]), [
+        'attributes' => [
+          'title' => $this->t('Send password reset instructions via email.'),
+          'class' => ['button--link', 'button', 'request-password-link'],
+        ],
+      ]),
+    ];
+
     $form['redirect_url'] = [
       '#type' => 'hidden',
       '#value' => '',
     ];
 
     $form['actions'] = ['#type' => 'actions'];
-    $form['actions']['submit'] = ['#type' => 'submit', '#value' => $this->t('Log in')];
+    $form['actions']['submit'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Log in'),
+      '#button_type' => 'primary',
+    ];
+
     return $form;
   }
 
