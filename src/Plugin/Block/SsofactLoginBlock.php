@@ -144,7 +144,9 @@ class SsofactLoginBlock extends BlockBase implements ContainerFactoryPluginInter
     $build['register']['box']['link'] = [
       '#type' => 'link',
       '#title' => $this->t('Register here'),
-      '#url' => Url::fromUri('https://' . $form['#server_domain'] . '/registrieren.html'),
+      '#url' => Url::fromUri('https://' . $form['#server_domain'] . '/registrieren.html?' . http_build_query([
+        'next' => \Drupal::request()->get('destination') ?: Url::fromRoute('user.page', [], ['absolute' => TRUE])->toString(),
+      ])),
       '#attributes' => [
         'title' => $this->t('Create a new user account.'),
         'class' => ['nfy-link', 'create-account-link'],
