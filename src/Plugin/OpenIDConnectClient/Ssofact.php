@@ -22,6 +22,7 @@ class Ssofact extends OpenIDConnectClientBase {
   const ENDPOINT_END_SESSION = '/REST/oauth/logout';
 
   const ENDPOINT_USER_CREATE = '/REST/services/authenticate/user/registerUser';
+  const ENDPOINT_IS_EMAIL_REGISTERED = '/REST/services/authenticate/user/IsEmailRegistered';
 
   const ROUTE_REDIRECT = 'ssofact.redirect';
 
