@@ -143,7 +143,10 @@ class SsofactLoginForm extends FormBase implements ContainerInjectionInterface {
     $form['request_password'] = [
       '#type' => 'link',
       '#title' => $this->t('Forgot password?'),
-      '#url' => Url::fromRoute('user.pass', [], [
+      '#url' => Url::fromUri('https://' . $form['#server_domain'] . '/index.php?' . http_build_query([
+        'pageid' => 53,
+        'next' => Url::fromUri('internal:/shop/user/account', ['absolute' => TRUE])->toString(),
+      ]), [
         'attributes' => [
           'title' => $this->t('Send password reset instructions via email.'),
           'class' => ['button--link', 'button', 'request-password-link'],
