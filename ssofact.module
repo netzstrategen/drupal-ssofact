@@ -35,6 +35,54 @@ function ssofact_openid_connect_userinfo_save(UserInterface $account, $context) 
   else {
     $account->block();
   }
+
+  // TODO take role names from the configuration.
+  if(has_user_subscription_active($userinfo['alfa_purchases']['purchases'])) {
+    $account->addRole('subscriber');
+  }
+  else {
+    $account->removeRole('subscriber');
+  }
+
+  // Tiger event to let 3r party to subscribe and alter.
+  \Drupal::service('event_dispatcher')->dispatch(SyncUserDataEvent::SYNC, new SyncUserDataEvent($account, $userinfo));
+}
+
+/**
+ * Helper method to determinate if a susbscription is active or not.
+ * @param array $purchases
+ *   "alfa_purchases" section of user info
+ *
+ * @return bool
+ *
+ */
+function has_user_subscription_active($purchases) {
+  $active_subscriptions = array_filter($purchases, "is_subscription_in_timeframe");
+  $digital_active_subscriptions = array_filter($purchases, "is_subscription_digital");
+  return !empty($digital_active_subscriptions);
+}
+
+/**
+ * Helper method to fitler the array with subscriptions active now.
+ */
+function is_subscription_in_timeframe($subscription) {
+  $now = date('Ymd');
+  return $subscription['purchase']['fromDay'] <= $now && $subscription['purchase']['toDay'] >= $now;
+}
+
+/**
+ * Helper method to filter digital subscriptions.
+ */
+function is_subscription_digital($subscription) {
+  return $subscription['purchase']['object'] === 'OABO';
+}
+
+/**
+ * Implements hook_form_FORMID_alter().
+ */
+function ssofact_form_user_login_form_alter(array &$form, FormStateInterface $form_state) {
+  $form['#attributes']['hidden'] = TRUE;
+  unset($form['name']['#attributes']['autofocus']);
 }
 
 /**
