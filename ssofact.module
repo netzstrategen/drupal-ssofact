@@ -37,7 +37,7 @@ function ssofact_openid_connect_userinfo_save(UserInterface $account, $context) 
   }
 
   // TODO take role names from the configuration.
-  if(has_user_subscription_active($userinfo['alfa_purchases']['purchases'])) {
+  if(!empty($userinfo['alfa_purchases']['purchases']) && has_user_subscription_active($userinfo['alfa_purchases']['purchases'])) {
     $account->addRole('subscriber');
   }
   else {
