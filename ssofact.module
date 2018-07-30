@@ -25,6 +25,15 @@ function ssofact_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
+ * Implements hook_openid_connect_user_properties_ignore_alter().
+ */
+function ssofact_openid_connect_user_properties_ignore_alter(array &$properties_ignore, array $context) {
+  unset($properties_ignore[array_search('mail', $properties_ignore)]);
+  // @todo Triggers (logged) error: 'property type not implemented: changed'
+  //unset($properties_ignore[array_search('changed', $properties_ignore)]);
+}
+
+/**
  * Implements hook_openid_connect_userinfo_save().
  */
 function ssofact_openid_connect_userinfo_save(UserInterface $account, $context) {
