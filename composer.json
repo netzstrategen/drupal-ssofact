@@ -18,6 +18,7 @@
         "enable-patching": true,
         "patches": {
             "drupal/openid_connect": {
+                "Fix claim mapping for email": "https://www.drupal.org/files/issues/2018-07-30/openid_connect.email_.0.patch"
             }
         }
     }
