@@ -5,7 +5,9 @@ namespace Drupal\ssofact\Controller;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Routing\Access\AccessInterface;
+use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -51,6 +53,24 @@ class SsofactRedirectController extends ControllerBase implements AccessInterfac
       return AccessResult::allowed();
     }
     return AccessResult::forbidden();
+  }
+
+  /**
+   * Redirects the user to the ssoFACT password reset form template.
+   */
+  public function passwordReset() {
+    $client_config = $this->config('openid_connect.settings.ssofact');
+    if (!$client_config->get('enabled')) {
+      return;
+    }
+    $client_config = $client_config->get('settings');
+    $url = Url::fromUri('https://' . $client_config['server_domain'] . '/index.php?' . http_build_query([
+      'pageid' => 53,
+      'next' => Url::fromUri('internal:/shop/user/account', ['absolute' => TRUE])->toString(),
+    ]));
+    $response = new RedirectResponse($url->toString());
+    $response->send();
+    return;
   }
 
 }
