@@ -181,32 +181,27 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    $text = 'a dummy text';
    $ajax_response->addCommand(new HtmlCommand('#edit-email', $text));
 
-   self::isEmalRegistred('adsf@example.com');
+   self::isEmailRegistered('adsf@example.com');
    return $ajax_response;
-
   }
 
-  private function isEmailRegistred($email) {
+  private function isEmailRegistered($email) {
     $client_config = $this->config('openid_connect.settings.ssofact')->get('settings');
     $ssofact_client = $this->pluginManager->createInstance('ssofact', $client_config);
-    $rfbe_key = $ssofact_client['rfbe_key'];
-    $rfbe_secret = $ssofact_client['rfbe_secret'];
-    $server_domain = $clinet_config['server_domain'];
-    $api_url = 'https://' . SSOFACT_SERVER_DOMAIN . SsoFact::ENDPOINT_IS_EMAIL_REGISTERED;
+    $api_url = 'https://' . $client_config['server_domain'] . Ssofact::ENDPOINT_IS_EMAIL_REGISTERED;
     $client = \Drupal::httpClient();
     $request = $client->post($api_url, [
       'body' => [
-        'email' => $email
+        'email' => $email,
       ],
       'headers' => [
         'Accept' => 'application/json',
-        'rfbe-key' => $rfbe_key,
-        'rfbe-secret' => $rfbe_secret,
+        'rfbe-key' => $client_config['rfbe_key'],
+        'rfbe-secret' => $client_config['rfbe_secret'],
       ],
     ]);
     $response = json_decode($request->getBody());
     return $response;
-
   }
 
 }
