@@ -96,18 +96,18 @@ class SsofactLoginForm extends FormBase implements ContainerInjectionInterface {
       'redirect_uri' => $redirect_uri,
     ]);
 
-    // @todo External URLs need a dynamic domain name.
-    // @todo CSS is loaded before theme, causing styles to be reset.
-    // $form['#attached']['library'][] = 'ssofact/form';
-    // $form['#attributes']['id'] = 'loginForm';
-    // $form['#attributes']['name'] = 'loginForm';
-    $form['#attributes']['class'][] = 'nfy-form';
-    $form['#attributes']['class'][] = 'nfy-flex-form';
     $form['#action'] = 'https://' . $client_config['server_domain'] . '/?' . http_build_query([
       'next' => $authorize_uri,
     ]);
-    // Allow other code to access this easily.
+    // Allow theme template to access the server domain easily.
     $form['#server_domain'] = $client_config['server_domain'];
+
+    // @todo External URLs need a dynamic domain name.
+    // @todo CSS is loaded before theme, causing styles to be reset.
+    // $form['#attached']['library'][] = 'ssofact/form';
+
+    $form['#attributes']['class'][] = 'nfy-form';
+    $form['#attributes']['class'][] = 'nfy-flex-form';
 
     $form['login'] = [
       '#type' => 'textfield',
