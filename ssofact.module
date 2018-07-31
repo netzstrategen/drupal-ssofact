@@ -84,6 +84,14 @@ function ssofact_form_user_login_form_alter(array &$form, FormStateInterface $fo
 }
 
 /**
+ * Implements hook_form_FORMID_alter().
+ */
+function ssofact_form_user_login_form_alter(array &$form, FormStateInterface $form_state) {
+  $form['#attributes']['hidden'] = TRUE;
+  unset($form['name']['#attributes']['autofocus']);
+}
+
+/**
  * Implements hook_css_alter().
  */
 function ssofact_css_alter(&$css) {
