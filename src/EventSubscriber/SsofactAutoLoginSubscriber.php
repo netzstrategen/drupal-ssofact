@@ -80,7 +80,7 @@ class SsofactAutoLoginSubscriber implements EventSubscriberInterface {
       $response = $client->authorize();
       $target_url = $response->getTargetUrl();
       $target_url .= '&' . http_build_query([
-        'destination' => $event->getRequest()->getRequestUri(),
+        'target' => $event->getRequest()->getRequestUri(),
       ]);
 
       $response->setTrustedTargetUrl($target_url);
