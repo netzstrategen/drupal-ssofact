@@ -82,7 +82,7 @@ class SsofactLoginForm extends FormBase implements ContainerInjectionInterface {
       'absolute' => TRUE,
       'language' => \Drupal::languageManager()->getLanguage(LanguageInterface::LANGCODE_NOT_APPLICABLE),
       'query' => [
-        'target' => Url::fromUri('internal:/')->toString(),
+        'target' => \Drupal::request()->query->get('destination') ?: Url::fromUri('internal:/')->toString(),
       ],
     ])->toString();
 
