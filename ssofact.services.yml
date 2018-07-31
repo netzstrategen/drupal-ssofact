@@ -9,3 +9,8 @@ services:
     arguments: ['@config.factory', '@plugin.manager.openid_connect_client.processor', '@current_user']
     tags:
       - { name: event_subscriber }
+  ssofact.destination:
+    class: Drupal\ssofact\EventSubscriber\DestinationRequestSubscriber
+    arguments: []
+    tags:
+      - { name: event_subscriber }
