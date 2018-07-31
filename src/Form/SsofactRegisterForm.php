@@ -96,19 +96,22 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
       'absolute' => TRUE,
       'language' => \Drupal::languageManager()->getLanguage(LanguageInterface::LANGCODE_NOT_APPLICABLE),
       'query' => [
-        'target' => Url::fromUri('internal:/')->toString(),
+        'target' => \Drupal::request()->query->get('destination') ?: Url::fromUri('internal:/')->toString(),
       ],
     ])->toString();
 
-    $server_domain = $client_config->get('settings.server_domain');
     $client_config = $client_config->get('settings');
     $client = $this->pluginManager->createInstance('ssofact', $client_config);
+    $server_domain = $client_config['server_domain'];
     $endpoints = $client->getEndpoints();
     $authorize_uri = $endpoints['authorization'] . '?' . http_build_query([
       'client_id' => $client_config['client_id'],
       'response_type' => 'code',
       'scope' => '',
       'redirect_uri' => $redirect_uri,
+    ]);
+    $form['#action'] = 'https://' . $server_domain . '/registrieren.html?' . http_build_query([
+      'next' => $authorize_uri,
     ]);
 
     $form['email'] = [
@@ -151,10 +154,6 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
       '#type' => 'hidden',
       '#value' => '1',
     ];
-
-    $form['#action'] = 'https://' . $server_domain . '/registrieren.html?' . http_build_query([
-      'next' => $authorize_uri,
-    ]);
 
     $form['actions'] = ['#type' => 'actions'];
     $form['actions']['submit'] = [
