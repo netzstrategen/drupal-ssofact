@@ -45,6 +45,34 @@ function ssofact_openid_connect_userinfo_save(UserInterface $account, $context) 
   else {
     $account->block();
   }
+
+  // @todo Use role name from configuration.
+  if (!empty($userinfo['alfa_purchases']['purchases']) && ssofact_is_user_active_subscriber($userinfo['alfa_purchases']['purchases'])) {
+    $account->addRole('subscriber');
+  }
+  else {
+    $account->removeRole('subscriber');
+  }
+}
+
+/**
+ * Returns whether a given list of purchases contains any active subscription granting access to premium online articles.
+ *
+ * @param array $purchases
+ *   The value of "alfa_purchases" from the SSO UserInfo.
+ *
+ * @return bool
+ */
+function ssofact_is_user_active_subscriber(array $purchases) {
+  $today = date('Ymd');
+  foreach ($purchases as $access) {
+    if ($access['purchase']['fromDay'] <= $today && $access['purchase']['toDay'] >= $today) {
+      if ($access['purchase']['object'] === 'OABO') {
+        return TRUE;
+      }
+    }
+  }
+  return FALSE;
 }
 
 /**
