@@ -88,15 +88,14 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
     if (!$client_config->get('enabled')) {
       return $form;
     }
-    // Use custom redirect_uri for client-side login form, which does not check
-    // state token.
+
     $redirect_uri = Url::fromRoute('ssofact.redirect_login', [
       'client_name' => 'ssofact',
     ], [
       'absolute' => TRUE,
       'language' => \Drupal::languageManager()->getLanguage(LanguageInterface::LANGCODE_NOT_APPLICABLE),
       'query' => [
-        'target' => \Drupal::request()->query->get('destination') ?: Url::fromUri('internal:/')->toString(),
+        'destination' => \Drupal::request()->query->get('destination') ?: Url::fromRoute('<current>')->toString(),
       ],
     ])->toString();
 
