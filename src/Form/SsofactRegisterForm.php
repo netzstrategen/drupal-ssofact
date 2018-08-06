@@ -3,12 +3,14 @@
 namespace Drupal\ssofact\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Routing\CurrentRouteMatch;
+use Drupal\Core\Routing\TrustedRedirectResponse;
 use Drupal\openid_connect\OpenIDConnectClaims;
 use Drupal\openid_connect\Plugin\OpenIDConnectClientManager;
 use Drupal\ssofact\Plugin\OpenIDConnectClient\Ssofact;
@@ -122,15 +124,6 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
         'autofocus' => 'autofocus',
         'placeholder' => $this->t('Your email address'),
       ],
-      '#ajax' => [
-        'callback' => 'Drupal\ssofact\Form\SsofactRegisterForm::validateEmail',
-        'effect' => 'fade',
-        'event' => 'keyup',
-        'progress' => [
-          'type' => 'throbber',
-          'message' => 'progessssss.....',
-        ],
-      ],
     ];
 
     $form['article_test'] = [
@@ -168,6 +161,10 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
+    list($status_code, $message) = $this->isEmailRegistered($form_state->getValue('email'));
+    if ($status_code !== 607) {
+      $form_state->setErrorByName('email', $message[0]);
+    }
   }
 
   /**
@@ -176,17 +173,7 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
   public function submitForm(array &$form, FormStateInterface $form_state) {
   }
 
-  public function validateEmail($form, FormStateInterface $form_state) {
-   $ajax_response = new AjaxResponse();
-   $text = 'a dummy text';
-   $ajax_response->addCommand(new HtmlCommand('#edit-email', $text));
-
-   self::isEmalRegistred('adsf@example.com');
-   return $ajax_response;
-
-  }
-
-  private function isEmailRegistred($email) {
+  private function isEmailRegistered($email) {
     $client_config = $this->config('openid_connect.settings.ssofact')->get('settings');
     $ssofact_client = $this->pluginManager->createInstance('ssofact', $client_config);
     $rfbe_key = $ssofact_client['rfbe_key'];
@@ -195,18 +182,16 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
     $api_url = 'https://' . SSOFACT_SERVER_DOMAIN . SsoFact::ENDPOINT_IS_EMAIL_REGISTERED;
     $client = \Drupal::httpClient();
     $request = $client->post($api_url, [
-      'body' => [
-        'email' => $email
-      ],
+      'body' => json_encode(['email' => $email]),
       'headers' => [
+        'Content-type' => 'application/json',
         'Accept' => 'application/json',
         'rfbe-key' => $rfbe_key,
         'rfbe-secret' => $rfbe_secret,
       ],
     ]);
     $response = json_decode($request->getBody());
-    return $response;
-
+    return [ (int) $response->statuscode, $response->userMessages];
   }
 
 }
