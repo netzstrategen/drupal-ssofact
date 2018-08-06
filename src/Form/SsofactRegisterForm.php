@@ -161,7 +161,9 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    list($status_code, $message) = $this->isEmailRegistered($form_state->getValue('email'));
+    $client_config = $this->config('openid_connect.settings.ssofact')->get('settings');
+    $ssofact_client = $this->pluginManager->createInstance('ssofact', $client_config);
+    list($status_code, $message) = $ssofact_client->isEmailRegistered($form_state->getValue('email'));
     if ($status_code !== 607) {
       $form_state->setErrorByName('email', $message[0]);
     }
@@ -171,27 +173,6 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-  }
-
-  private function isEmailRegistered($email) {
-    $client_config = $this->config('openid_connect.settings.ssofact')->get('settings');
-    $ssofact_client = $this->pluginManager->createInstance('ssofact', $client_config);
-    $rfbe_key = $ssofact_client['rfbe_key'];
-    $rfbe_secret = $ssofact_client['rfbe_secret'];
-    $server_domain = $clinet_config['server_domain'];
-    $api_url = 'https://' . SSOFACT_SERVER_DOMAIN . SsoFact::ENDPOINT_IS_EMAIL_REGISTERED;
-    $client = \Drupal::httpClient();
-    $request = $client->post($api_url, [
-      'body' => json_encode(['email' => $email]),
-      'headers' => [
-        'Content-type' => 'application/json',
-        'Accept' => 'application/json',
-        'rfbe-key' => $rfbe_key,
-        'rfbe-secret' => $rfbe_secret,
-      ],
-    ]);
-    $response = json_decode($request->getBody());
-    return [ (int) $response->statuscode, $response->userMessages];
   }
 
 }

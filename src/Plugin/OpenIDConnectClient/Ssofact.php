@@ -176,4 +176,23 @@ class Ssofact extends OpenIDConnectClientBase {
     }
   }
 
+  public function isEmailRegistered($email) {
+    $rfbe_key = $this->configuration['rfbe_key'];
+    $rfbe_secret = $this->configuration['rfbe_secret'];
+    $server_domain = $clinet_config['server_domain'];
+    $api_url = 'https://' . $this->configuration['server_domain']. static::ENDPOINT_IS_EMAIL_REGISTERED;
+    $client = \Drupal::httpClient();
+    $request = $client->post($api_url, [
+      'body' => json_encode(['email' => $email]),
+      'headers' => [
+        'Content-type' => 'application/json',
+        'Accept' => 'application/json',
+        'rfbe-key' => $rfbe_key,
+        'rfbe-secret' => $rfbe_secret,
+      ],
+    ]);
+    $response = json_decode($request->getBody());
+    return [ (int) $response->statuscode, $response->userMessages];
+  }
+
 }
