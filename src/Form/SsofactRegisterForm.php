@@ -161,12 +161,6 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $client_config = $this->config('openid_connect.settings.ssofact')->get('settings');
-    $ssofact_client = $this->pluginManager->createInstance('ssofact', $client_config);
-    list($status_code, $message) = $ssofact_client->isEmailRegistered($form_state->getValue('email'));
-    if ($status_code !== 607) {
-      $form_state->setErrorByName('email', $message[0]);
-    }
   }
 
   /**

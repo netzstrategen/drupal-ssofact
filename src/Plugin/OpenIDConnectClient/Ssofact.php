@@ -192,7 +192,10 @@ class Ssofact extends OpenIDConnectClientBase {
       ],
     ]);
     $response = json_decode($request->getBody());
-    return [ (int) $response->statuscode, $response->userMessages];
+    return [
+      'status' => (int) $response->statuscode,
+      'message' => $response->userMessages[0],
+    ];
   }
 
 }
