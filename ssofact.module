@@ -137,3 +137,18 @@ function ssofact_convert_asset_paths(&$assets) {
     $assets[$name]['type'] = 'external';
   }
 }
+
+/**
+ * Hides page title where ssofact replace it.
+ *
+ * Implements hook_block_access().
+ */
+function ssofact_block_access(Block $block, $operation, AccountInterface $account) {
+  $attributes = \Drupal::request()->attributes;
+  $route = $attributes->get('_route');
+  if ($block->getPluginId() === 'page_title_block') {
+    if ($route === 'user.login' || $route === 'ssofact.user') {
+      return AccessResult::forbidden()->addCacheableDependency($block);
+    }
+  }
+}
