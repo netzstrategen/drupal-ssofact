@@ -137,3 +137,24 @@ function ssofact_convert_asset_paths(&$assets) {
     $assets[$name]['type'] = 'external';
   }
 }
+
+/**
+ * Implements hook_block_access().
+ *
+ * Hides page title block on pages on which it is output as part of the
+ * main page content already.
+ */
+function ssofact_block_access(Block $block, $operation, AccountInterface $account) {
+  if ($block->getPluginId() === 'page_title_block') {
+    $attributes = \Drupal::request()->attributes;
+    $route = $attributes->get('_route');
+    // @todo The route ssofact.user (/user/sso) actually outputs a placeholder
+    //   for the page title; but due to a wrong deployment, the whole page
+    //   title block including the placeholder was never displayed when the
+    //   front-end login form was implemented, so the native (correct) page
+    //   title is not styled and duplicates the new page title now.
+    if ($route === 'user.login' || $route === 'ssofact.user') {
+      return AccessResult::forbidden()->addCacheableDependency($block);
+    }
+  }
+}
