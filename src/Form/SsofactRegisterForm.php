@@ -97,7 +97,7 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
       'absolute' => TRUE,
       'language' => \Drupal::languageManager()->getLanguage(LanguageInterface::LANGCODE_NOT_APPLICABLE),
       'query' => [
-        'destination' => Url::fromRoute('<current>')->toString(),
+        'target' => Url::fromRoute('<current>')->toString(),
       ],
     ])->toString();
 
