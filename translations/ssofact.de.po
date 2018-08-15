@@ -1,0 +1,157 @@
+# $Id$
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  modules/contrib/ssofact/ssofact.module: n/a
+#  modules/contrib/ssofact/ssofact.info.yml: n/a
+#  modules/contrib/ssofact/ssofact.routing.yml: n/a
+#  modules/contrib/ssofact/config/schema/ssofact.schema.yml: n/a
+#  modules/contrib/ssofact/src/Plugin/OpenIDConnectClient/Ssofact.php: n/a
+#  modules/contrib/ssofact/src/Form/SsofactLoginForm.php: n/a
+#  modules/contrib/ssofact/src/Plugin/Block/SsofactRegisterBlock.php: n/a
+#  modules/contrib/ssofact/src/Plugin/Block/SsofactServerRegisterBlock.php: n/a
+#  modules/contrib/ssofact/src/Form/SsofactRegisterForm.php: n/a
+#  modules/contrib/ssofact/src/Form/SsofactServerRegisterForm.php: n/a
+#  modules/contrib/ssofact/src/Plugin/Block/SsofactLoginBlock.php: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2018-07-29 19:49+0200\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: modules/contrib/ssofact/ssofact.module:23
+msgid "About"
+msgstr "Über das Modul"
+
+#: modules/contrib/ssofact/ssofact.module:24 modules/contrib/ssofact/ssofact.info.yml:0
+msgid "OpenID Connect provider for Newsfactory ssoFACT."
+msgstr "OpenID Connect Anbieter für Newsfactory ssoFACT"
+
+#: modules/contrib/ssofact/ssofact.info.yml:0
+msgid "OpenID Connect Newsfactory ssoFACT Client"
+msgstr "OpenID Connect Newsfactory ssoFACT Client"
+
+#: modules/contrib/ssofact/ssofact.info.yml:0
+msgid "Other"
+msgstr "Andere"
+
+#: modules/contrib/ssofact/ssofact.routing.yml:0
+msgid "OpenID Connect ssoFACT login form redirect page"
+msgstr "OpenID Connect ssoFACT Redirect-Seite für Login-Formular"
+
+#: modules/contrib/ssofact/ssofact.routing.yml:0
+msgid "ssoFACT"
+msgstr "ssoFACT"
+
+#: modules/contrib/ssofact/config/schema/ssofact.schema.yml:0
+msgid "OpenID Connect Newsfactory ssoFACT settings"
+msgstr "OpenID Connect Newsfactory ssoFACT Einstellungen"
+
+#: modules/contrib/ssofact/config/schema/ssofact.schema.yml:0
+msgid "Enable client"
+msgstr "Client aktivieren"
+
+#: modules/contrib/ssofact/config/schema/ssofact.schema.yml:0
+msgid "Client ID"
+msgstr Client-ID"
+
+#: modules/contrib/ssofact/config/schema/ssofact.schema.yml:0
+msgid "Client secret"
+msgstr "Client Secret"
+
+#: modules/contrib/ssofact/config/schema/ssofact.schema.yml:0 modules/contrib/ssofact/src/Plugin/OpenIDConnectClient/Ssofact.php:50
+msgid "Server domain"
+msgstr "Server-Domain"
+
+#: modules/contrib/ssofact/src/Form/SsofactLoginForm.php:137
+msgid "Stay logged-in"
+msgstr "Angemeldet bleiben"
+
+#: modules/contrib/ssofact/src/Form/SsofactLoginForm.php:145
+msgid "Forgot password?"
+msgstr "Passwort vergessen?"
+
+#: modules/contrib/ssofact/src/Form/SsofactLoginForm.php:151 modules/contrib/ssofact/src/Plugin/Block/SsofactRegisterBlock.php:122 modules/contrib/ssofact/src/Plugin/Block/SsofactServerRegisterBlock.php:122
+msgid "Send password reset instructions via email."
+msgstr "Anleitung zur Rücksetzung des Passworts per Mail senden."
+
+#: modules/contrib/ssofact/src/Form/SsofactLoginForm.php:165 modules/contrib/ssofact/src/Plugin/Block/SsofactRegisterBlock.php:108 modules/contrib/ssofact/src/Plugin/Block/SsofactServerRegisterBlock.php:108
+msgid "Log in"
+msgstr "Anmelden"
+
+#: modules/contrib/ssofact/src/Form/SsofactRegisterForm.php:123 modules/contrib/ssofact/src/Form/SsofactServerRegisterForm.php:101
+msgid "Your email address"
+msgstr "E-Mail-Adresse"
+
+#: modules/contrib/ssofact/src/Form/SsofactRegisterForm.php:144
+msgid "Please note the general <a href=':url_data'>data protection regulations</a> and the <a href=':url_info'>information obligation</a>."
+msgstr "Bitte beachten Sie die allgemeinen <a href=':url_data'>Datenschutzbestimmungen</a> und die <a href=':url_info'>Informationspflicht</a>."
+
+#: modules/contrib/ssofact/src/Form/SsofactRegisterForm.php:161 modules/contrib/ssofact/src/Form/SsofactServerRegisterForm.php:119
+msgid "Sign up"
+msgstr "Registrieren"
+
+#: modules/contrib/ssofact/src/Form/SsofactServerRegisterForm.php:137
+msgid "Unable to register your account. Please contact our support."
+msgstr "Ihr Zugangdaten können nicht registriert werden. Bitte kontaktieren Sie unseren Support."
+
+#: modules/contrib/ssofact/src/Plugin/Block/SsofactLoginBlock.php:146
+msgid "Register here"
+msgstr "Hier registrieren"
+
+#: modules/contrib/ssofact/src/Plugin/Block/SsofactLoginBlock.php:151
+msgid "Create a new user account."
+msgstr "Neuen Nutzeraccount anlegen."
+
+#: modules/contrib/ssofact/src/Plugin/Block/SsofactLoginBlock.php:14
+msgid "User login (ssoFACT)"
+msgstr "Nutzerlogin (ssoFACT)"
+
+#: modules/contrib/ssofact/src/Plugin/Block/SsofactLoginBlock.php:14 modules/contrib/ssofact/src/Plugin/Block/SsofactRegisterBlock.php:14 modules/contrib/ssofact/src/Plugin/Block/SsofactServerRegisterBlock.php:14
+msgid "Forms"
+msgstr "Formulare"
+
+#: modules/contrib/ssofact/src/Plugin/Block/SsofactRegisterBlock.php:111 modules/contrib/ssofact/src/Plugin/Block/SsofactServerRegisterBlock.php:111
+msgid "Log in with your existing account."
+msgstr "Melden Sie sich mit Ihrem existierenden Accoung an."
+
+#: modules/contrib/ssofact/src/Plugin/Block/SsofactRegisterBlock.php:119 modules/contrib/ssofact/src/Plugin/Block/SsofactServerRegisterBlock.php:119
+msgid "Reset your password"
+msgstr "Setzen Sie Ihr Passwort zurück"
+
+#: modules/contrib/ssofact/src/Plugin/Block/SsofactRegisterBlock.php:128
+msgid "Continue reading?"
+msgstr "Weiterlesen?"
+
+#: modules/contrib/ssofact/src/Plugin/Block/SsofactRegisterBlock.php:131
+msgid "Give us your e-mail address to unlock this post for free"
+msgstr "Bitte geben Sie Ihre E-Mailadresse an, um diesen Beitrag gratis freizuschalten"
+
+#: modules/contrib/ssofact/src/Plugin/Block/SsofactRegisterBlock.php:14
+msgid "User register (ssoFACT)"
+msgstr "Nutzerregistrierung (ssoFACT)"
+
+#: modules/contrib/ssofact/src/Plugin/Block/SsofactServerRegisterBlock.php:14
+msgid "User server register (ssoFACT)"
+msgstr "Nutzerregistrierung Server (ssoFACT)"
+
+#: modules/contrib/ssofact/src/Plugin/OpenIDConnectClient/Ssofact.php:122
+msgid "Userinfo: @userinfo"
+msgstr "Nutzerinfo: @userinfo"
+
+#: modules/contrib/ssofact/src/Plugin/OpenIDConnectClient/Ssofact.php:165
+msgid "User register response: @response"
+msgstr "Nutzerregistrierungsantwort: @response"
+
+#: modules/contrib/ssofact/src/Plugin/OpenIDConnectClient/Ssofact.php:172
+msgid "User register failed: @error_message"
+msgstr "Nutzeranmeldung fehlgeschlagen: @error_message"
