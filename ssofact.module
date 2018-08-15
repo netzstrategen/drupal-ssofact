@@ -5,10 +5,13 @@
  * Contains ssofact.module.
  */
 
+use Drupal\block\Entity\Block;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\UrlHelper;
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountProxy;
 use Drupal\user\UserInterface;
 
 /**
@@ -144,7 +147,7 @@ function ssofact_convert_asset_paths(&$assets) {
  * Hides page title block on pages on which it is output as part of the
  * main page content already.
  */
-function ssofact_block_access(Block $block, $operation, AccountInterface $account) {
+function ssofact_block_access(Block $block, $operation, AccountProxy $account) {
   if ($block->getPluginId() === 'page_title_block') {
     $attributes = \Drupal::request()->attributes;
     $route = $attributes->get('_route');
