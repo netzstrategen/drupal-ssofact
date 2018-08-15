@@ -135,7 +135,7 @@ class SsofactLoginForm extends FormBase implements ContainerInjectionInterface {
     $form['permanent_login'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Stay logged-in'),
-      '#value' => 1,
+      '#default_value' => 0,
       '#wrapper_attributes' => [
         'class' => ['nfy-checkbox', 'checkbox'],
       ],
