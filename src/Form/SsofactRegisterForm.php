@@ -129,7 +129,7 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
     $form['privacy'] = [
       '#type' => 'checkbox',
       '#required' => TRUE,
-      '#title' => $this->t("Please note the general <a href=':url_data'>data protection regulations</a> and the <a href=':url_info'>information obligation</a>.", [
+      '#title' => $this->t('Please note the general <a href=":url_data">data protection regulations</a> and the <a href=":url_info">information obligation</a>.', [
         ':url_data' => '/node/2',
         ':url_info' => 'https://www.stimme-medien.de/metanavigation/informationspflichten/',
       ]),
