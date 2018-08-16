@@ -22,6 +22,7 @@ class Ssofact extends OpenIDConnectClientBase {
   const ENDPOINT_END_SESSION = '/REST/oauth/logout';
 
   const ENDPOINT_USER_CREATE = '/REST/services/authenticate/user/registerUser';
+  const ENDPOINT_IS_EMAIL_REGISTERED = '/REST/services/authenticate/user/IsEmailRegistered';
 
   const ROUTE_REDIRECT = 'ssofact.redirect';
 
@@ -89,7 +90,7 @@ class Ssofact extends OpenIDConnectClientBase {
    */
   public function authorize($scope = 'openid email') {
     // Non-empty scope triggers error:
-    // "Authorization failed: invalid_scope. Details: Unsupported Scope"
+    // "Authorization failed: invalid_scope. Details: Unsupported Scope".
     return parent::authorize($this->configuration['scope']);
   }
 
@@ -173,6 +174,28 @@ class Ssofact extends OpenIDConnectClientBase {
         ]);
       throw $e;
     }
+  }
+
+  public function isEmailRegistered($email) {
+    $rfbe_key = $this->configuration['rfbe_key'];
+    $rfbe_secret = $this->configuration['rfbe_secret'];
+    $server_domain = $clinet_config['server_domain'];
+    $api_url = 'https://' . $this->configuration['server_domain'] . static::ENDPOINT_IS_EMAIL_REGISTERED;
+    $client = \Drupal::httpClient();
+    $request = $client->post($api_url, [
+      'body' => json_encode(['email' => $email]),
+      'headers' => [
+        'Content-type' => 'application/json',
+        'Accept' => 'application/json',
+        'rfbe-key' => $rfbe_key,
+        'rfbe-secret' => $rfbe_secret,
+      ],
+    ]);
+    $response = json_decode($request->getBody());
+    return [
+      'status' => (int) $response->statuscode,
+      'message' => $response->userMessages[0],
+    ];
   }
 
 }
