@@ -12,6 +12,7 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountProxy;
+use Drupal\ssofact\Event\SyncUserDataEvent;
 use Drupal\user\UserInterface;
 
 /**
@@ -42,7 +43,7 @@ function ssofact_openid_connect_user_properties_ignore_alter(array &$properties_
  */
 function ssofact_openid_connect_userinfo_save(UserInterface $account, $context) {
   $userinfo = $context['userinfo'];
-  if (!empty($userinfo['confirmed']) && empty($userinfo['deactivated'])) {
+  if (empty($userinfo['deactivated'])) {
     $account->activate();
   }
   else {
@@ -56,6 +57,9 @@ function ssofact_openid_connect_userinfo_save(UserInterface $account, $context) 
   else {
     $account->removeRole('subscriber');
   }
+
+  // Tiger event to let 3r party to subscribe and alter.
+  \Drupal::service('event_dispatcher')->dispatch(SyncUserDataEvent::SYNC, new SyncUserDataEvent($account, $userinfo));
 }
 
 /**

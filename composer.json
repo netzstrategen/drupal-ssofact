@@ -9,8 +9,15 @@
         "issues": "https://www.drupal.org/project/issues/ssofact",
         "source": "http://cgit.drupalcode.org/ssofact"
     },
+    "repositories": [
+      {
+        "type": "composer",
+        "url": "https://packages.drupal.org/8"
+      }
+    ],
     "minimum-stability": "dev",
     "require": {
+        "cweagans/composer-patches": "^1.6",
         "drupal/openid_connect": "1.x-dev",
         "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz/no-trailing-comma": "*"
     },
@@ -18,7 +25,8 @@
         "enable-patching": true,
         "patches": {
             "drupal/openid_connect": {
-                "Fix claim mapping for email": "https://www.drupal.org/files/issues/2018-07-30/openid_connect.email_.0.patch"
+                "Fix claim mapping for email": "https://www.drupal.org/files/issues/2018-07-30/openid_connect.email_.0.patch",
+                "Support destination definition as request parameter": "https://www.drupal.org/files/issues/2018-07-26/2988428-destination-by-request-param-1.patch"
             }
         }
     }
