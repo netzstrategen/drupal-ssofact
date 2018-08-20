@@ -111,8 +111,9 @@ class SsofactServerRegisterForm extends FormBase implements ContainerInjectionIn
     ];
     $form['redirect_url'] = [
       '#type' => 'hidden',
-      // @todo Use current path.
-      '#value' => Url::fromUri('internal:/')->toString(),
+      // Redirect to user account dashboard after clicking link in confirmation
+      // email.
+      '#value' => Url::fromUri('internal:/shop/user/account', ['absolute' => TRUE])->toString(),
     ];
 
     $form['actions'] = ['#type' => 'actions'];
