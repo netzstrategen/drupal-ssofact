@@ -86,6 +86,8 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
       return $form;
     }
 
+    // Use custom redirect_uri for client-side login form, which does not check
+    // state token.
     $redirect_uri = Url::fromRoute('ssofact.redirect_login', [
       'client_name' => 'ssofact',
     ], [
@@ -144,6 +146,9 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
 
     $form['#action'] = 'https://' . $server_domain . '/registrieren.html?' . http_build_query([
       'next' => $authorize_uri,
+      // Redirect to user account dashboard after clicking link in confirmation
+      // email.
+      'redirect_url' => Url::fromUri('internal:/shop/user/account', ['absolute' => TRUE])->toString(),
     ]);
 
     $form['actions'] = ['#type' => 'actions'];
