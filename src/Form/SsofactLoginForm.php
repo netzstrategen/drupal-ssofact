@@ -113,7 +113,7 @@ class SsofactLoginForm extends FormBase implements ContainerInjectionInterface {
       '#type' => 'textfield',
       '#title' => $this->t('Email address'),
       '#title_display' => 'invisible',
-      '#placeholder' => 'E-Mail-Adresse eingeben',
+      '#placeholder' => 'E-Mail-Adresse/Benutzername eingeben',
       '#size' => 60,
       '#maxlength' => USERNAME_MAX_LENGTH,
       '#required' => TRUE,
