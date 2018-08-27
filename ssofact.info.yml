@@ -5,3 +5,5 @@ core: 8.x
 package: Other
 dependencies:
   - openid_connect
+'interface translation project': ssofact
+'interface translation server pattern': modules/contrib/ssofact/translations/%language.po
