@@ -107,7 +107,7 @@ class SsofactRegisterBlock extends BlockBase implements ContainerFactoryPluginIn
       '#title' => $this->t('Log in'),
       '#url' => Url::fromRoute('user.login', [], [
         'query' => [
-          'destination' => Url::fromRoute('<current>', [], ['absolute' => TRUE])->toString(),
+          'destination' => Url::fromRoute('<current>')->toString(),
         ],
         'attributes' => [
           'title' => $this->t('Log in with your existing account.'),
