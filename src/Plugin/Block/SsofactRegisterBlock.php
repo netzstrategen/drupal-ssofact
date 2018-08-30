@@ -102,18 +102,19 @@ class SsofactRegisterBlock extends BlockBase implements ContainerFactoryPluginIn
 
     // Build action links.
     $items = [];
-    if (\Drupal::config('user.settings')->get('register') != USER_REGISTER_ADMINISTRATORS_ONLY) {
-      $items['login'] = [
-        '#type' => 'link',
-        '#title' => $this->t('Log in'),
-        '#url' => Url::fromRoute('user.login', [], [
-          'attributes' => [
-            'title' => $this->t('Log in with your existing account.'),
+    $items['login'] = [
+      '#type' => 'link',
+      '#title' => $this->t('Log in'),
+      '#url' => Url::fromRoute('user.login', [], [
+        'query' => [
+          'destination' => Url::fromRoute('<current>', [], ['absolute' => TRUE])->toString(),
+        ],
+        'attributes' => [
+          'title' => $this->t('Log in with your existing account.'),
             'class' => ['login-link'],
           ],
         ]),
-      ];
-    }
+    ];
     $items['request_password'] = [
       '#type' => 'link',
       '#title' => $this->t('Reset your password'),
