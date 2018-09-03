@@ -7,17 +7,16 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Url;
-use Drupal\Core\Routing\CurrentRouteMatch;
 use Drupal\openid_connect\OpenIDConnectClaims;
 use Drupal\openid_connect\Plugin\OpenIDConnectClientManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class RegisterForm.
+ * Class ServerRegisterForm.
  *
  * @package Drupal\ssofact\Form
  */
-class SsofactRegisterForm extends FormBase implements ContainerInjectionInterface {
+class SsofactServerRegisterForm extends FormBase implements ContainerInjectionInterface {
 
   /**
    * Drupal\openid_connect\Plugin\OpenIDConnectClientManager definition.
@@ -34,13 +33,6 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
   protected $claims;
 
   /**
-   * The current route match service.
-   *
-   * @var \Drupal\Core\Routing\RouteMatch
-   */
-  protected $routeMatch;
-
-  /**
    * The constructor.
    *
    * @param \Drupal\openid_connect\Plugin\OpenIDConnectClientManager $plugin_manager
@@ -50,13 +42,11 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    */
   public function __construct(
       OpenIDConnectClientManager $plugin_manager,
-      OpenIDConnectClaims $claims,
-      CurrentRouteMatch $route_match
+      OpenIDConnectClaims $claims
   ) {
 
     $this->pluginManager = $plugin_manager;
     $this->claims = $claims;
-    $this->routeMatch = $route_match;
   }
 
   /**
@@ -65,8 +55,7 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('plugin.manager.openid_connect_client.processor'),
-      $container->get('openid_connect.claims'),
-      $container->get('current_route_match')
+      $container->get('openid_connect.claims')
     );
   }
 
@@ -74,7 +63,7 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'ssofact_register_form';
+    return 'ssofact_server_register_form';
   }
 
   /**
@@ -85,7 +74,6 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
     if (!$client_config->get('enabled')) {
       return $form;
     }
-
     // Use custom redirect_uri for client-side login form, which does not check
     // state token.
     $redirect_uri = Url::fromRoute('ssofact.redirect_login', [
@@ -94,15 +82,14 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
       'absolute' => TRUE,
       'language' => \Drupal::languageManager()->getLanguage(LanguageInterface::LANGCODE_NOT_APPLICABLE),
       'query' => [
-        'target' => Url::fromRoute('<current>')->toString(),
+        'target' => Url::fromUri('internal:/')->toString(),
       ],
     ])->toString();
 
-    $server_domain = $client_config->get('settings.server_domain');
     $client_config = $client_config->get('settings');
     $client = $this->pluginManager->createInstance('ssofact', $client_config);
     $endpoints = $client->getEndpoints();
-    $authorize_uri = $endpoints['authorization'] . '?' . http_build_query([
+    $authorize_uri = $endpoints['user_create'] . '?' . http_build_query([
       'client_id' => $client_config['client_id'],
       'response_type' => 'code',
       'scope' => '',
@@ -111,6 +98,7 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
 
     $form['email'] = [
       '#type' => 'email',
+      '#title' => $this->t('Your email address'),
       '#size' => 60,
       '#maxlength' => USERNAME_MAX_LENGTH,
       '#required' => TRUE,
@@ -119,44 +107,17 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
         'autocapitalize' => 'none',
         'spellcheck' => 'false',
         'autofocus' => 'autofocus',
-        'placeholder' => $this->t('Your email address'),
       ],
     ];
-
-    $form['article_test'] = [
+    $form['redirect_url'] = [
       '#type' => 'hidden',
-      '#value' => $this->routeMatch->getRawParameter('node'),
-    ];
-
-    $form['privacy'] = [
-      '#type' => 'checkbox',
-      '#required' => TRUE,
-      '#title' => $this->t('Please note the general <a href=":url_data" target="_blank">data protection regulations</a> and the <a href=":url_info" target="_blank">information obligation</a>.', [
-        ':url_data' => '/node/2',
-        ':url_info' => 'https://www.stimme-medien.de/metanavigation/informationspflichten/',
-      ]),
-      '#return_value' => '1',
-    ];
-
-    // Hiddes field with value "1" to enable 1-article-test registration.
-    $form['_qf__registerForm'] = [
-      '#type' => 'hidden',
-      '#value' => '1',
-    ];
-
-    $form['#action'] = 'https://' . $server_domain . '/registrieren.html?' . http_build_query([
-      'next' => $authorize_uri,
       // Redirect to user account dashboard after clicking link in confirmation
       // email.
-      'redirect_url' => Url::fromUri('internal:/shop/user/account', ['absolute' => TRUE])->toString(),
-    ]);
-
-    $form['actions'] = ['#type' => 'actions'];
-    $form['actions']['submit'] = [
-      '#type' => 'submit',
-      '#value' => $this->t('Sign up'),
+      '#value' => Url::fromUri('internal:/shop/user/account', ['absolute' => TRUE])->toString(),
     ];
 
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = ['#type' => 'submit', '#value' => $this->t('Sign up')];
     return $form;
   }
 
@@ -164,12 +125,36 @@ class SsofactRegisterForm extends FormBase implements ContainerInjectionInterfac
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
+    $client_config = $this->config('openid_connect.settings.ssofact')->get('settings');
+    $client = $this->pluginManager->createInstance('ssofact', $client_config);
+    $response = $client->createUser($form_state->getValue('email'));
+
+    if ($response['statuscode'] !== 200) {
+      foreach ($response['userMessages'] as $error_message) {
+        $form_state->setError($form['email'], $error_message);
+      }
+    }
+    if (empty($response['userId'])) {
+      $form_state->setError($form['email'], $this->t('Unable to register your account. Please contact our support.'));
+    }
+    else {
+      $form_state->setTemporaryValue('userId', $response['userId']);
+    }
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    if ($sub = $form_state->getTemporaryValue('userId')) {
+      // @todo Redirect to SSO login?
+    }
+    // openid_connect_save_destination();
+
+    // $scopes = $this->claims->getScopes();
+    // $_SESSION['openid_connect_op'] = 'login';
+    // $response = $client->authorize($scopes, $form_state);
+    // $form_state->setResponse($response);
   }
 
 }

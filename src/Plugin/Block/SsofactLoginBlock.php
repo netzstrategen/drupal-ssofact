@@ -145,7 +145,11 @@ class SsofactLoginBlock extends BlockBase implements ContainerFactoryPluginInter
       '#type' => 'link',
       '#title' => $this->t('Register here'),
       '#url' => Url::fromUri('https://' . $form['#server_domain'] . '/registrieren.html?' . http_build_query([
+        // Redirect to current page immediately after registering and logging in.
         'next' => \Drupal::request()->get('destination') ?: Url::fromRoute('user.page', [], ['absolute' => TRUE])->toString(),
+        // Redirect to user account dashboard after clicking link in confirmation
+        // email.
+        'redirect_url' => Url::fromUri('internal:/shop/user/account', ['absolute' => TRUE])->toString(),
       ])),
       '#attributes' => [
         'title' => $this->t('Create a new user account.'),

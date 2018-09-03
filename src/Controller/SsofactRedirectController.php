@@ -47,7 +47,7 @@ class SsofactRedirectController extends ControllerBase implements AccessInterfac
    */
   public function access() {
     $query = $this->requestStack->getCurrentRequest()->query;
-    if ($query->get('code') && $query->get('target')) {
+    if ($query->get('code')) {
       return AccessResult::allowed();
     }
     return AccessResult::forbidden();

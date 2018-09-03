@@ -15,12 +15,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Provides a user login block.
  *
  * @Block(
- *   id = "ssofact_register_block",
- *   admin_label = @Translation("User register (ssoFACT)"),
+ *   id = "ssofact_server_register_block",
+ *   admin_label = @Translation("User server register (ssoFACT)"),
  *   category = @Translation("Forms")
  * )
  */
-class SsofactRegisterBlock extends BlockBase implements ContainerFactoryPluginInterface {
+class SsofactServerRegisterBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   use RedirectDestinationTrait;
 
@@ -79,7 +79,7 @@ class SsofactRegisterBlock extends BlockBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public function build() {
-    $form = \Drupal::formBuilder()->getForm('Drupal\ssofact\Form\SsofactRegisterForm');
+    $form = \Drupal::formBuilder()->getForm('Drupal\ssofact\Form\SsofactServerRegisterForm');
     unset($form['email']['#attributes']['autofocus']);
     $form['email']['#size'] = 15;
 
@@ -102,19 +102,18 @@ class SsofactRegisterBlock extends BlockBase implements ContainerFactoryPluginIn
 
     // Build action links.
     $items = [];
-    $items['login'] = [
-      '#type' => 'link',
-      '#title' => $this->t('Log in'),
-      '#url' => Url::fromRoute('user.login', [], [
-        'query' => [
-          'destination' => Url::fromRoute('<current>')->toString(),
-        ],
-        'attributes' => [
-          'title' => $this->t('Log in with your existing account.'),
+    if (\Drupal::config('user.settings')->get('register') != USER_REGISTER_ADMINISTRATORS_ONLY) {
+      $items['login'] = [
+        '#type' => 'link',
+        '#title' => $this->t('Log in'),
+        '#url' => Url::fromRoute('user.login', [], [
+          'attributes' => [
+            'title' => $this->t('Log in with your existing account.'),
             'class' => ['login-link'],
           ],
         ]),
-    ];
+      ];
+    }
     $items['request_password'] = [
       '#type' => 'link',
       '#title' => $this->t('Reset your password'),
@@ -126,12 +125,7 @@ class SsofactRegisterBlock extends BlockBase implements ContainerFactoryPluginIn
       ]),
     ];
     return [
-      '#title' => $this->t('Continue reading?'),
-      'description' => [
-        '#type' => 'markup',
-        '#markup' => $this->t('Enter your e-mail address to unlock this post for free'),
-      ],
-      'user_register_form' => $form,
+      'user_server_register_form' => $form,
       'user_links' => [
         '#theme' => 'item_list',
         '#items' => $items,
