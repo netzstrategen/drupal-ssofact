@@ -26,7 +26,8 @@
         "patches": {
             "drupal/openid_connect": {
                 "Fix claim mapping for email": "https://www.drupal.org/files/issues/2018-07-30/openid_connect.email_.0.patch",
-                "Support destination definition as request parameter": "https://www.drupal.org/files/issues/2018-07-26/2988428-destination-by-request-param-1.patch"
+                "Support destination definition as request parameter": "https://www.drupal.org/files/issues/2018-07-26/2988428-destination-by-request-param-1.patch",
+                "Redirect URI openid-connect/% not accessible in maintenance mode": "https://www.drupal.org/files/issues/2018-09-05/openid_connect.2831886-5.patch"
             }
         }
     }
