@@ -55,11 +55,11 @@ class SsofactAutoLoginSubscriber implements EventSubscriberInterface {
   public static function getSubscribedEvents() {
     // Run after:
     // - 300: AuthenticationSubscriber (to get current_user)
-    // Run before:
-    // - 30: MaintenanceModeSubscriber (admins should be able to log in during
+    // - 30: MaintenanceModeSubscriber (only local accounts may login during
     //   maintenance)
+    // Run before:
     // - 27: DynamicPageCacheSubscriber
-    $events[KernelEvents::REQUEST][] = ['onKernelRequestAuthenticate', 290];
+    $events[KernelEvents::REQUEST][] = ['onKernelRequestAuthenticate', 29];
     return $events;
   }
 
