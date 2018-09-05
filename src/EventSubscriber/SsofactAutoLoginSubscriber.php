@@ -55,11 +55,11 @@ class SsofactAutoLoginSubscriber implements EventSubscriberInterface {
   public static function getSubscribedEvents() {
     // Run after:
     // - 300: AuthenticationSubscriber (to get current_user)
-    // - 30: MaintenanceModeSubscriber (only local accounts may login during
-    //   maintenance)
     // Run before:
+    // - 30: MaintenanceModeSubscriber (admins should be able to log in during
+    //   maintenance)
     // - 27: DynamicPageCacheSubscriber
-    $events[KernelEvents::REQUEST][] = ['onKernelRequestAuthenticate', 29];
+    $events[KernelEvents::REQUEST][] = ['onKernelRequestAuthenticate', 290];
     return $events;
   }
 
@@ -71,7 +71,7 @@ class SsofactAutoLoginSubscriber implements EventSubscriberInterface {
   public function onKernelRequestAuthenticate(GetResponseEvent $event) {
     if ($this->currentUser->isAnonymous() && $event->getRequest()->cookies->has('RF_OAUTH_SERVER')) {
       // Do not interfere during any OpenID Connect authentication procedures.
-      if (FALSE !== strpos($event->getRequest()->get('_route'), 'openid_connect') || FALSE !== strpos($event->getRequest()->get('_route'), 'ssofact')) {
+      if (FALSE !== strpos($event->getRequest()->getPathInfo(), 'openid-connect')) {
         return;
       }
       $client_config = $this->configFactory->get('openid_connect.settings.ssofact')->get('settings');
