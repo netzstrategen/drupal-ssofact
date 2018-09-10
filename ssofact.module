@@ -35,15 +35,15 @@ function ssofact_help($route_name, RouteMatchInterface $route_match) {
 function ssofact_openid_connect_user_properties_ignore_alter(array &$properties_ignore, array $context) {
   unset($properties_ignore[array_search('mail', $properties_ignore)]);
   // @todo Triggers (logged) error: 'property type not implemented: changed'
-  //unset($properties_ignore[array_search('changed', $properties_ignore)]);
+  // unset($properties_ignore[array_search('changed', $properties_ignore)]);
 }
 
 /**
  * Implements hook_openid_connect_userinfo_save().
  */
 function ssofact_openid_connect_userinfo_save(UserInterface $account, $context) {
-  $userinfo = $context['userinfo'];
-  if (empty($userinfo['deactivated'])) {
+  $user_info = $context['userinfo'];
+  if (empty($user_info['deactivated'])) {
     $account->activate();
   }
   else {
@@ -51,7 +51,200 @@ function ssofact_openid_connect_userinfo_save(UserInterface $account, $context) 
   }
 
   // Trigger event to let 3rd party to subscribe and alter.
-  \Drupal::service('event_dispatcher')->dispatch(SyncUserDataEvent::SYNC, new SyncUserDataEvent($account, $userinfo));
+  \Drupal::service('event_dispatcher')->dispatch(SyncUserDataEvent::SYNC, new SyncUserDataEvent($account, $user_info));
+
+  $article_test = \Drupal::service('role_paywall_article_test.manager');
+  $user_data = \Drupal::service('user.data');
+  $uid = $account->id();
+  if (isset($user_info['alfa_purchases']['purchases']) && is_array($user_info['alfa_purchases']['purchases'])) {
+    $purchases = $user_info['alfa_purchases']['purchases'];
+    $today = date('Ymd');
+    $active_purchases = [];
+    $expired_purchases = [];
+    $have_subscriptions = FALSE;
+    $subscription_timestamp = 0;
+    $have_free_trials = FALSE;
+    $free_trial_timestamp = 0;
+    $have_paid_trials = FALSE;
+    $paid_trial_timestamp = 0;
+    $product_labels = [];
+    $customer_status = '';
+    $subscription_product = '';
+    $last_purchase_timestamp = '';
+
+    // Classify purchases.
+    foreach ($purchases as $access) {
+      $purchase = $access['purchase'];
+      if (!is_product($purchase) && !is_free_trial($purchase) && !is_paid_trial($purchase)) {
+        continue;
+      }
+      // Assuming here no subscriptions schedules for the future.
+      if ($purchase['fromDay'] <= $today && $purchase['toDay'] >= $today) {
+        $active_purchases[] = $access['purchase'];
+      }
+      else {
+        $expired_purchases[] = $access['purchase'];
+      }
+    }
+
+    // No active subscriptions but article test active.
+    if (empty($active_purchases) && !$article_test->hasUserAccessToNextTest($account)) {
+      $customer_status = 'trial | article';
+      $last_purchase_timestamp = $article_test->getLastTestTimestamp($account);
+    }
+    // No active subscriptions neither article-test.
+    elseif (empty($active_purchases)) {
+      extract_purchases_info($expired_purchases, $have_free_trials, $have_paid_trials, $have_subscriptions, $product_labels, 'toDay', $free_trial_timestamp, $paid_trial_timestamp, $subscription_timestamp);
+
+      // Had active subscriptions in the past.
+      if ($have_subscriptions) {
+        $subscription_product = implode('+', $product_labels);
+        $customer_status = 'ex | subscriber | ' . $subscription_product;
+        $last_purchase_timestamp = $subscription_timestamp;
+      }
+      // Assuming that free (as is digital) is more relevant for the
+      // customer journey than the paid (print) trials.
+      elseif ($have_free_trials) {
+        $customer_status = 'ex | trial | free';
+        $last_purchase_timestamp = $free_trial_timestamp;
+      }
+      elseif ($have_free_trials) {
+        $customer_status = 'ex | trial | paid';
+        $last_purchase_timestamp = $paid_trial_timestamp;
+      }
+    }
+    // There are active purchases.
+    else {
+      extract_purchases_info($active_purchases, $have_free_trials, $have_paid_trials, $have_subscriptions, $product_labels, 'fromDay', $free_trial_timestamp, $paid_trial_timestamp, $subscription_timestamp);
+
+      if ($have_subscriptions && $have_free_trials) {
+        $subscription_product = implode('+', $product_labels);
+        $customer_status = 'subscriber+trial | free | ' . $subscription_product;
+        $last_purchase_timestamp = $subscription_timestamp < $free_trial_timestamp ? $subscription_timestamp : $free_trial_timestamp;
+      }
+      elseif ($have_subscriptions && $have_paid_trials) {
+        $subscription_product = implode('+', $product_labels);
+        $customer_status = 'subscriber+trial | paid | ' . $subscription_product;
+        $last_purchase_timestamp = $subscription_timestamp < $paid_trial_timestamp ? $subscription_timestamp : $paid_trial_timestamp;
+      }
+      elseif ($have_subscriptions) {
+        $subscription_product = implode('+', $product_labels);
+        $customer_status = 'subscriber | ' . $subscription_product;
+        $last_purchase_timestamp = $subscription_timestamp;
+      }
+      // Assuming that free (as is digital) is more relevant for the
+      // customer journey than the paid (print) trials.
+      elseif ($have_free_trials) {
+        $customer_status = 'trial | free';
+        $last_purchase_timestamp = $free_trial_timestamp;
+      }
+      elseif ($have_free_trials) {
+        $customer_status = 'trial | paid';
+        $last_purchase_timestamp = $paid_trial_timestamp;
+      }
+    }
+
+    $user_data->set('ssofact', $uid, 'customer_status', $customer_status);
+    $user_data->set('ssofact', $uid, 'last_purchase_timestamp', strtotime($last_purchase_timestamp));
+  }
+  elseif (!$article_test->hasUserAccessToNextTest($account)) {
+    $user_data->set('ssofact', $uid, 'customer_status', 'trial | article');
+    $user_data->set('ssofact', $uid, 'last_purchase_timestamp', $article_test->getLastTestTimestamp($account));
+  }
+
+}
+
+/**
+ * Helper function to extract product info.
+ */
+function extract_purchases_info(array $purchases, &$have_free_trials = FALSE, &$have_paid_trials = FALSE, &$have_subscriptions = FALSE, &$product_labels = [], $timestamp_key = 'toDay', &$free_trial_timestamp = 0, &$paid_trial_timestamp = 0, &$subscription_timestamp = 0) {
+  foreach ($purchases as $purchase) {
+    if (!is_product($purchase)) {
+      continue;
+    }
+    if (is_free_trial($purchase)) {
+      $have_free_trials = TRUE;
+      $free_trial_timestamp = $free_trial_timestamp > $purchase[$timestamp_key] ? $free_trial_timestamp : $purchase[$timestamp_key];
+    }
+    elseif (is_paid_trial($purchase)) {
+      $have_paid_trials = TRUE;
+      $paid_trial_timestamp = $paid_trial_timestamp > $purchase[$timestamp_key] ? $paid_trial_timestamp : $purchase[$timestamp_key];
+    }
+    elseif (is_product($purchase)) {
+      $have_subscriptions = TRUE;
+      $product_labels[] = get_product_label($purchase);
+      $subscription_timestamp = $subscription_timestamp > $purchase[$timestamp_key] ? $subscription_timestamp : $purchase[$timestamp_key];
+    }
+  }
+  $product_labels = array_unique($product_labels);
+}
+
+/**
+ * Helper function to determinate product tracking label.
+ */
+function get_product_label(array $purchase) {
+  $label = '';
+  if ($purchase['object'] === 'HST') {
+    $label = 'print';
+  }
+  elseif ($purchase['object'] === 'EST') {
+    $label = 'epaper';
+  }
+  elseif ($purchase['object'] === 'OABO') {
+    $label = 'digital';
+  }
+  return $label;
+}
+
+/**
+ * Helper function to determinate if a purchase is a real product or not.
+ */
+function is_product(array $purchase) {
+  $valid_objects = ['HST', 'EST', 'OABO'];
+  if (in_array($purchase['object'], $valid_objects)) {
+    return TRUE;
+  }
+  elseif (isset($purchase['IVW'])) {
+    return $purchase['object'] === 'EST' && $purchase['edition'] === 'EH' && $purchase['IVW'] === 'i_122107';
+  }
+  return FALSE;
+}
+
+/**
+ * Helper function to determinate if a product is a free trial or not.
+ */
+function is_free_trial(array $purchase) {
+  if (!isset($purchase['IVW'])) {
+    return FALSE;
+  }
+
+  // Product SKU: stite.
+  $is_oabo_trial = $purchase['object'] === 'OABO' && $purchase['edition'] === 'STDE' && $purchase['IVW'] === 'i_121122';
+  // Product SKU: estp4WNEU.
+  $is_est_trial = $purchase['object'] === 'EST' && $purchase['edition'] === 'EH' && $purchase['IVW'] === 'i_122107';
+  if ($is_oabo_trial || $is_est_trial) {
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+/**
+ * Helper function to determinate if a product is a free trial or not.
+ */
+function is_paid_trial(array $purchase) {
+  if (!isset($purchase['IVW'])) {
+    return FALSE;
+  }
+
+  // Product SKU: print4Wo4.
+  $is_h_trial = $purchase['object'] === 'H' && $purchase['edition'] === 'H' && $purchase['IVW'] === 'i_113528';
+  $is_oabo_trial = $purchase['object'] === 'OABO' && $purchase['edition'] === 'STDE' && $purchase['IVW'] === 'i_121133';
+  if ($is_h_trial || $is_oabo_trial) {
+    return TRUE;
+  }
+
+  return FALSE;
 }
 
 /**
@@ -104,7 +297,7 @@ function ssofact_file_url_alter(&$uri) {
 /**
  * Converts the paths of the given assets to be absolute.
  *
- * @param $assets
+ * @param array $assets
  *   The assets objects to convert.
  */
 function ssofact_convert_asset_paths(&$assets) {
