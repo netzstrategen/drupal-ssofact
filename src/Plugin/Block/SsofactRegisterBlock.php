@@ -129,7 +129,7 @@ class SsofactRegisterBlock extends BlockBase implements ContainerFactoryPluginIn
       '#title' => $this->t('Continue reading?'),
       'description' => [
         '#type' => 'markup',
-        '#markup' => $this->t('Enter your e-mail address to unlock this post for free'),
+        '#markup' => $this->t('If you are already a premium subscriber, please log in with your access data. Or enter your e-mail address to test our offer without obligation and to read the article for free!'),
       ],
       'user_register_form' => $form,
       'user_links' => [
