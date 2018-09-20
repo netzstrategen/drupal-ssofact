@@ -93,8 +93,8 @@ msgid "Your email address"
 msgstr "E-Mail-Adresse"
 
 #: modules/contrib/ssofact/src/Form/SsofactRegisterForm.php:144
-msgid "Please note the general <a href=\":url_data\" target=\"_blank\">data protection regulations</a> and the <a href=\":url_info\" target=\"_blank\">information obligation</a>."
-msgstr "Bitte beachten Sie die allgemeinen <a href=\":url_data\" target=\"_blank\">Datenschutzbestimmungen</a> und die <a href=\":url_info\" target=\"_blank\">Informationspflicht</a>."
+msgid "I hereby agree with the <a href=\":url_data\" target=\"_blank\">terms and conditions</a> and the <a href=\":url_info\" target=\"_blank\">privacy policy</a> and the associated data collection and use."
+msgstr "Hiermit erkläre ich mich mit den <a href=\":url_data\" target=\"_blank\">AGB</a> und der <a href=\":url_info\" target=\"_blank\">Datenschutzerklärung</a> sowie mit der damit verbundenen Datenerhebung und -verwendung einverstanden."
 
 #: modules/contrib/ssofact/src/Form/SsofactRegisterForm.php:161 modules/contrib/ssofact/src/Form/SsofactServerRegisterForm.php:119
 msgid "Sign up"
