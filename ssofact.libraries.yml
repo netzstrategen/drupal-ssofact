@@ -1,9 +1,6 @@
 form:
-  version: 1.x
+  version: 1.0.0
   js:
-    https://stage-login.stimme.de/cms_media/minify/2/javascript/javascript_4.js: { type: external, minified: true }
-  css:
-    theme:
-      https://stage-login.stimme.de/pu_stimme/styles_frametemplate/01_styles.css: { type: external, group: theme, weight: 800 }
+    https://login.stimme.de/pu_stimme/scripts_min/50_social_facebook.js: { type: external, minified: true }
   dependencies:
     - core/jquery

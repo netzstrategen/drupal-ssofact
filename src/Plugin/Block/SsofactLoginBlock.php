@@ -104,6 +104,7 @@ class SsofactLoginBlock extends BlockBase implements ContainerFactoryPluginInter
       'user_login_form' => $form,
       '#server_domain' => $form['#server_domain'],
     ];
+    $build['#attached']['library'][] = 'ssofact/form';
 
     $build['social'] = [
       '#weight' => 20,
