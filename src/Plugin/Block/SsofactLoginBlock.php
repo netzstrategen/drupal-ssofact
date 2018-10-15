@@ -119,7 +119,8 @@ class SsofactLoginBlock extends BlockBase implements ContainerFactoryPluginInter
       '#attributes' => [
         'class' => ['fb-login-button'],
         'data-scope' => 'public_profile,email',
-        'data-width' => '500',
+        'data-width' => '100%',
+        'style' => 'min-width: 100%;',
         'onlogin' => 'nfyFacebookStatusCallback()',
         'data-max-rows' => '1',
         'data-size' => 'large',
