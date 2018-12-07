@@ -166,6 +166,12 @@ class SsofactLoginForm extends FormBase implements ContainerInjectionInterface {
       '#button_type' => 'primary',
     ];
 
+    $form['#cache'] = [
+      'contexts' => [
+        'url',
+      ],
+    ];
+
     return $form;
   }
 
